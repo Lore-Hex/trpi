@@ -1,3 +1,4 @@
+/** Display per-turn token throughput in the TRPI UI. */
 import type { AssistantMessage } from "@earendil-works/pi-ai";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 

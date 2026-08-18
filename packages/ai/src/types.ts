@@ -60,6 +60,7 @@ export type KnownProvider =
 	| "huggingface"
 	| "fireworks"
 	| "together"
+	| "trustedrouter"
 	| "baseten"
 	| "opencode"
 	| "opencode-go"

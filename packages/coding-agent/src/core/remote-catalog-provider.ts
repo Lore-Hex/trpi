@@ -3,7 +3,6 @@ import { VERSION } from "../config.ts";
 import { fetchWithRetry } from "../utils/management-http.ts";
 import { getPiUserAgent } from "../utils/pi-user-agent.ts";
 
-const DEFAULT_CATALOG_BASE_URL = "https://pi.dev";
 const REMOTE_CATALOG_ATTEMPT_TIMEOUT_MS = 4_000;
 export const REMOTE_CATALOG_REFRESH_INTERVAL_MS = 4 * 60 * 60 * 1000;
 
@@ -42,10 +41,10 @@ function remoteModels(
 	return entry.models;
 }
 
-/** Add a persisted pi.dev catalog overlay to a static built-in provider. */
+/** Add a persisted, optionally configured catalog overlay to a static built-in provider. */
 export function withRemoteCatalog(
 	provider: Provider,
-	catalogBaseUrl: string = DEFAULT_CATALOG_BASE_URL,
+	catalogBaseUrl: string | undefined = process.env.TRPI_MODEL_CATALOG_BASE_URL,
 	localGeneratedAt?: number,
 ): Provider {
 	let dynamicModels: readonly Model<Api>[] = [];
@@ -65,7 +64,7 @@ export function withRemoteCatalog(
 			) {
 				return;
 			}
-			if (!context.allowNetwork || context.signal.aborted) return;
+			if (!catalogBaseUrl || !context.allowNetwork || context.signal.aborted) return;
 			if (
 				!context.force &&
 				stored?.checkedAt !== undefined &&

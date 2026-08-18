@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Build pi binaries for all platforms locally.
+# Build TRPI binaries for all platforms locally.
 # Mirrors .github/workflows/build-binaries.yml
 #
 # Usage:
@@ -16,12 +16,12 @@
 #
 # Output:
 #   packages/coding-agent/binaries/
-#     pi-darwin-arm64.tar.gz
-#     pi-darwin-x64.tar.gz
-#     pi-linux-x64.tar.gz
-#     pi-linux-arm64.tar.gz
-#     pi-windows-x64.zip
-#     pi-windows-arm64.zip
+#     trpi-darwin-arm64.tar.gz
+#     trpi-darwin-x64.tar.gz
+#     trpi-linux-x64.tar.gz
+#     trpi-linux-arm64.tar.gz
+#     trpi-windows-x64.zip
+#     trpi-windows-arm64.zip
 
 set -euo pipefail
 
@@ -200,11 +200,11 @@ for platform in "${PLATFORMS[@]}"; do
     # worker must be present in the compiled executable.
     #
     # Disable cwd bunfig.toml autoload so project preload scripts cannot crash the
-    # standalone binary before pi starts (see #7684).
-    if [[ "$platform" == windows-* ]]; then
-        bun build --compile --no-compile-autoload-bunfig --target="$bun_target" ./dist/bun/cli.js ./src/utils/image-resize-worker.ts --outfile "$OUTPUT_DIR/$platform/pi.exe"
-    else
-        bun build --compile --no-compile-autoload-bunfig --target="$bun_target" ./dist/bun/cli.js ./src/utils/image-resize-worker.ts --outfile "$OUTPUT_DIR/$platform/pi"
+    # standalone binary before TRPI starts (see upstream #7684).
+	if [[ "$platform" == windows-* ]]; then
+		bun build --compile --no-compile-autoload-bunfig --target="$bun_target" ./dist/bun/cli.js ./src/utils/image-resize-worker.ts --outfile "$OUTPUT_DIR/$platform/trpi.exe"
+	else
+		bun build --compile --no-compile-autoload-bunfig --target="$bun_target" ./dist/bun/cli.js ./src/utils/image-resize-worker.ts --outfile "$OUTPUT_DIR/$platform/trpi"
     fi
 done
 
@@ -215,6 +215,7 @@ for platform in "${PLATFORMS[@]}"; do
     cp package.json "$OUTPUT_DIR/$platform/"
     cp README.md "$OUTPUT_DIR/$platform/"
     cp CHANGELOG.md "$OUTPUT_DIR/$platform/"
+    cp ../../LICENSE "$OUTPUT_DIR/$platform/"
     cp ../../node_modules/@silvia-odwyer/photon-node/photon_rs_bg.wasm "$OUTPUT_DIR/$platform/"
     mkdir -p "$OUTPUT_DIR/$platform/theme"
     cp dist/modes/interactive/theme/*.json "$OUTPUT_DIR/$platform/theme/"
@@ -252,12 +253,12 @@ cd "$OUTPUT_DIR"
 for platform in "${PLATFORMS[@]}"; do
     if [[ "$platform" == windows-* ]]; then
         # Windows (zip)
-        echo "Creating pi-$platform.zip..."
-        (cd "$platform" && zip -r ../pi-$platform.zip .)
-    else
-        # Unix platforms (tar.gz) - use wrapper directory for mise compatibility
-        echo "Creating pi-$platform.tar.gz..."
-        mv "$platform" pi && tar -czf pi-$platform.tar.gz pi && mv pi "$platform"
+		echo "Creating trpi-$platform.zip..."
+		(cd "$platform" && zip -r ../trpi-$platform.zip .)
+	else
+		# Unix platforms (tar.gz) - use wrapper directory for mise compatibility
+		echo "Creating trpi-$platform.tar.gz..."
+		mv "$platform" trpi && tar -czf trpi-$platform.tar.gz trpi && mv trpi "$platform"
     fi
 done
 
@@ -265,10 +266,10 @@ done
 echo "==> Extracting archives for testing..."
 for platform in "${PLATFORMS[@]}"; do
     rm -rf "$platform"
-    if [[ "$platform" == windows-* ]]; then
-        mkdir -p "$platform" && (cd "$platform" && unzip -q ../pi-$platform.zip)
-    else
-        tar -xzf pi-$platform.tar.gz && mv pi "$platform"
+	if [[ "$platform" == windows-* ]]; then
+		mkdir -p "$platform" && (cd "$platform" && unzip -q ../trpi-$platform.zip)
+	else
+		tar -xzf trpi-$platform.tar.gz && mv trpi "$platform"
     fi
 done
 
@@ -279,9 +280,9 @@ ls -lh *.tar.gz *.zip 2>/dev/null || true
 echo ""
 echo "Extracted directories for testing:"
 for platform in "${PLATFORMS[@]}"; do
-    if [[ "$platform" == windows-* ]]; then
-        echo "  $OUTPUT_DIR/$platform/pi.exe"
-    else
-        echo "  $OUTPUT_DIR/$platform/pi"
+	if [[ "$platform" == windows-* ]]; then
+		echo "  $OUTPUT_DIR/$platform/trpi.exe"
+	else
+		echo "  $OUTPUT_DIR/$platform/trpi"
     fi
 done

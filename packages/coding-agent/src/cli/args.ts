@@ -268,14 +268,14 @@ ${chalk.bold("Commands:")}
   ${APP_NAME} install <source> [-l]     Install extension source and add to settings
   ${APP_NAME} remove <source> [-l]      Remove extension source from settings
   ${APP_NAME} uninstall <source> [-l]   Alias for remove
-  ${APP_NAME} update [source|self|pi]   Update pi, extensions, or model catalogs
+  ${APP_NAME} update [source|self|${APP_NAME}]   Update ${APP_NAME}, extensions, or model catalogs
   ${APP_NAME} list                      List installed extensions from settings
   ${APP_NAME} config [-l]               Open TUI to enable/disable package resources (Tab switches scope)
   ${APP_NAME} auth <command>            Print credentials or check provider readiness
   ${APP_NAME} <command> --help          Show help for install/remove/uninstall/update/list/config/auth
 
 ${chalk.bold("Options:")}
-  --provider <name>              Provider name (default: google)
+  --provider <name>              Provider name (default: trustedrouter)
   --model <pattern>              Model pattern or ID (supports "provider/id" and optional ":<thinking>")
   --api-key <key>                API key (defaults to env vars)
   --system-prompt <text>         System prompt (default: coding assistant prompt)
@@ -315,8 +315,8 @@ ${chalk.bold("Options:")}
   --tui-mode <mode>              TUI mode: regular (default) or fullscreen
   --approve, -a                  Trust project-local files for this run
   --no-approve, -na              Ignore project-local files for this run
-  --offline                      Disable startup network operations (same as PI_OFFLINE=1)
-  --                             End option parsing; treat remaining arguments as messages/files
+	--offline                      Disable startup network operations (same as TR_COWORK_OFFLINE=1)
+	--                             End option parsing; treat remaining arguments as messages/files
   --help, -h                     Show this help
   --version, -v                  Show version number
 
@@ -385,6 +385,8 @@ ${chalk.bold("Examples:")}
   ${APP_NAME} --export session.jsonl output.html
 
 ${chalk.bold("Environment Variables:")}
+  TRUSTEDROUTER_API_KEY           - TrustedRouter API key (primary provider)
+  TR_API_KEY                      - Short alias for TRUSTEDROUTER_API_KEY
   ANTHROPIC_AUTH_TOKEN             - Anthropic bearer auth token
   ANTHROPIC_API_KEY                - Anthropic Claude API key
   ANTHROPIC_OAUTH_TOKEN            - Anthropic OAuth token (alternative to API key)
@@ -429,10 +431,15 @@ ${chalk.bold("Environment Variables:")}
   AWS_REGION                       - AWS region for Amazon Bedrock (e.g., us-east-1)
   ${ENV_AGENT_DIR.padEnd(32)} - Config directory (default: ~/${CONFIG_DIR_NAME}/agent)
   ${ENV_SESSION_DIR.padEnd(32)} - Session storage directory (overridden by --session-dir)
-  PI_PACKAGE_DIR                   - Override package directory (for Nix/Guix store paths)
-  PI_OFFLINE                       - Disable startup network operations when set to 1/true/yes
-  PI_TELEMETRY                     - Override install telemetry when set to 1/true/yes or 0/false/no
-  PI_SHARE_VIEWER_URL              - Base URL for /share command (default: https://pi.dev/session/)
+  TRPI_PACKAGE_DIR                 - Override package directory (for Nix/Guix store paths)
+  PI_PACKAGE_DIR                   - Legacy alias for TRPI_PACKAGE_DIR
+  TRPI_OFFLINE                     - Disable startup network operations when set to 1/true/yes
+  PI_OFFLINE                       - Legacy alias for TRPI_OFFLINE
+  TRPI_SKIP_VERSION_CHECK          - Disable the startup version check when set to 1
+  PI_SKIP_VERSION_CHECK            - Legacy alias for TRPI_SKIP_VERSION_CHECK
+  PI_TELEMETRY                     - Control optional provider attribution headers
+  TRPI_SHARE_VIEWER_URL            - Optional custom base URL for /share (default: direct GitHub gist)
+  PI_SHARE_VIEWER_URL              - Legacy alias for TRPI_SHARE_VIEWER_URL
 
 ${chalk.bold("Built-in Tool Names:")}
   read       - Read file contents

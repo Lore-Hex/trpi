@@ -14,15 +14,26 @@ interface EditorCapture {
 	directoryMode: number;
 }
 
+function quoteShellArgument(value: string): string {
+	if (process.platform === "win32") {
+		return `"${value.replaceAll('"', '""')}"`;
+	}
+	return `'${value.replaceAll("'", `'\\''`)}'`;
+}
+
 async function runExternalEditor(fixtureFlag?: "--fail" | "--empty"): Promise<{
 	result: ExternalEditorResult;
 	capture: EditorCapture;
 }> {
-	const testDirectory = mkdtempSync(join(tmpdir(), "pi-external-editor-test-"));
+	const testDirectory = mkdtempSync(join(tmpdir(), "pi external editor test-"));
 	const capturePath = join(testDirectory, "capture.json");
 	try {
+		const command = [process.execPath, editorFixturePath, capturePath, fixtureFlag]
+			.filter((argument): argument is string => argument !== undefined)
+			.map(quoteShellArgument)
+			.join(" ");
 		const result = await editInExternalEditor({
-			command: `${process.execPath} ${editorFixturePath} ${capturePath}${fixtureFlag ? ` ${fixtureFlag}` : ""}`,
+			command,
 			content: "original",
 		});
 		const capture = JSON.parse(readFileSync(capturePath, "utf-8")) as EditorCapture;
@@ -39,7 +50,7 @@ describe("editInExternalEditor", () => {
 
 		expect(result).toEqual({ status: "complete", content: "edited" });
 		expect(dirname(directory)).toBe(tmpdir());
-		expect(basename(directory)).toMatch(/^pi-editor-.+$/);
+		expect(basename(directory)).toMatch(/^trpi-editor-.+$/);
 		expect(basename(capture.filePath)).toBe("prompt.md");
 		expect(capture.entries).toEqual(["prompt.md"]);
 		expect(capture.content).toBe("original");

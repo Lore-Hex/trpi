@@ -8,7 +8,8 @@ export interface ChangelogEntry {
 	content: string;
 }
 
-const GITHUB_REPO = "earendil-works/pi";
+const TRPI_GITHUB_REPO = "Lore-Hex/trpi";
+const UPSTREAM_GITHUB_REPO = "earendil-works/pi";
 const CHANGELOG_LINK_BASE_PATH = "packages/coding-agent";
 const LEGACY_REPO_RE = /^https:\/\/github\.com\/(?:badlogic|earendil-works)\/pi-mono(?=\/|$)/;
 const URL_SCHEME_RE = /^[a-z][a-z0-9+.-]*:/i;
@@ -67,14 +68,16 @@ function isDirectoryTarget(originalPath: string, repositoryPath: string): boolea
 }
 
 function normalizeChangelogLinkTarget(target: string, tag: string): string {
-	let canonicalTarget = target.replace(LEGACY_REPO_RE, `https://github.com/${GITHUB_REPO}`);
-	const repoUrl = `https://github.com/${GITHUB_REPO}`;
+	let canonicalTarget = target.replace(LEGACY_REPO_RE, `https://github.com/${UPSTREAM_GITHUB_REPO}`);
 
-	for (const route of ["blob", "tree"]) {
-		for (const branch of ["main", "master"]) {
-			const floatingRefPrefix = `${repoUrl}/${route}/${branch}/`;
-			if (canonicalTarget.startsWith(floatingRefPrefix)) {
-				canonicalTarget = `${repoUrl}/${route}/${tag}/${canonicalTarget.slice(floatingRefPrefix.length)}`;
+	for (const repo of [TRPI_GITHUB_REPO, UPSTREAM_GITHUB_REPO]) {
+		const repoUrl = `https://github.com/${repo}`;
+		for (const route of ["blob", "tree"]) {
+			for (const branch of ["main", "master"]) {
+				const floatingRefPrefix = `${repoUrl}/${route}/${branch}/`;
+				if (canonicalTarget.startsWith(floatingRefPrefix)) {
+					canonicalTarget = `${repoUrl}/${route}/${tag}/${canonicalTarget.slice(floatingRefPrefix.length)}`;
+				}
 			}
 		}
 	}
@@ -94,7 +97,7 @@ function normalizeChangelogLinkTarget(target: string, tag: string): string {
 	}
 
 	const route = isDirectoryTarget(pathPart, repositoryPath) ? "tree" : "blob";
-	return `https://github.com/${GITHUB_REPO}/${route}/${tag}/${encodeURI(repositoryPath)}${query}${fragment}`;
+	return `https://github.com/${TRPI_GITHUB_REPO}/${route}/${tag}/${encodeURI(repositoryPath)}${query}${fragment}`;
 }
 
 export function normalizeChangelogLinks(markdown: string, version: string | ChangelogEntry): string {

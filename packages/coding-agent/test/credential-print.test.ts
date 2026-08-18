@@ -1,8 +1,14 @@
 import { InMemoryModelsStore } from "@earendil-works/pi-ai";
 import { describe, expect, test, vi } from "vitest";
 import { parseArgs } from "../src/cli/args.ts";
-import { AuthCommandError, isAuthCommandHelp, parseAuthCommand } from "../src/cli/auth-command.ts";
+import {
+	AuthCommandError,
+	isAuthCommandHelp,
+	parseAuthCommand,
+	printAuthCommandHelp,
+} from "../src/cli/auth-command.ts";
 import { resolveCredentialForPrint } from "../src/cli/credential-print.ts";
+import { APP_NAME } from "../src/config.ts";
 import { AuthStorage } from "../src/core/auth-storage.ts";
 import { ModelRuntime } from "../src/core/model-runtime.ts";
 import { main } from "../src/main.ts";
@@ -17,6 +23,20 @@ async function createRuntime(credentials: AuthStorage): Promise<ModelRuntime> {
 }
 
 describe("credential print commands", () => {
+	test("prints auth help with the distribution command name", () => {
+		const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+		try {
+			printAuthCommandHelp();
+			const output = logSpy.mock.calls.map(([message]) => String(message)).join("\n");
+			expect(output).toContain(`${APP_NAME} auth print-api-key`);
+			expect(output).toContain(`${APP_NAME} auth print-bearer-token`);
+			expect(output).toContain(`${APP_NAME} auth check`);
+			expect(output).not.toContain("\n  pi auth");
+		} finally {
+			logSpy.mockRestore();
+		}
+	});
+
 	test("prints a resolved API key", async () => {
 		const runtime = await createRuntime(AuthStorage.inMemory({ openai: { type: "api_key", key: "test-api-key" } }));
 		const args = parseArgs(["--provider", "openai"]);
@@ -75,7 +95,7 @@ describe("credential print commands", () => {
 			const stderr = errorSpy.mock.calls.map(([message]) => String(message)).join("\n");
 			expect(stderr).toContain('Unknown option --credentails for "auth check".');
 			expect(stderr).toContain(
-				'Use "pi --help" or "pi auth check --provider <provider> [--json] [--credentials] [--no-refresh]".',
+				`Use "${APP_NAME} --help" or "${APP_NAME} auth check --provider <provider> [--json] [--credentials] [--no-refresh]".`,
 			);
 			expect(process.exitCode).toBe(1);
 		} finally {

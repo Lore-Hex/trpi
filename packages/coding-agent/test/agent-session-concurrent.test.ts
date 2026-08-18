@@ -78,6 +78,14 @@ describe("AgentSession concurrent prompt guard", () => {
 		}
 	});
 
+	async function createAuthenticatedModelRuntime() {
+		const authStorage = AuthStorage.inMemory({
+			anthropic: { type: "api_key", key: "test-key" },
+		});
+		const modelRegistry = await createModelRegistry(authStorage, tempDir);
+		return getModelRuntime(modelRegistry);
+	}
+
 	async function createSession() {
 		const model = getModel("anthropic", "claude-sonnet-4-5")!;
 		let abortSignal: AbortSignal | undefined;
@@ -110,17 +118,14 @@ describe("AgentSession concurrent prompt guard", () => {
 
 		const sessionManager = SessionManager.inMemory();
 		const settingsManager = SettingsManager.create(tempDir, tempDir);
-		const authStorage = AuthStorage.create(join(tempDir, "auth.json"));
-		const modelRegistry = await createModelRegistry(authStorage, tempDir);
-		// Set a runtime API key so validation passes
-		await authStorage.modify("anthropic", async () => ({ type: "api_key", key: "test-key" }));
+		const modelRuntime = await createAuthenticatedModelRuntime();
 
 		session = new AgentSession({
 			agent,
 			sessionManager,
 			settingsManager,
 			cwd: tempDir,
-			modelRuntime: getModelRuntime(modelRegistry),
+			modelRuntime,
 			resourceLoader: createTestResourceLoader(),
 		});
 
@@ -235,9 +240,7 @@ describe("AgentSession concurrent prompt guard", () => {
 
 		const sessionManager = SessionManager.inMemory();
 		const settingsManager = SettingsManager.create(tempDir, tempDir);
-		const authStorage = AuthStorage.create(join(tempDir, "auth.json"));
-		const modelRegistry = await createModelRegistry(authStorage, tempDir);
-		await authStorage.modify("anthropic", async () => ({ type: "api_key", key: "test-key" }));
+		const modelRuntime = await createAuthenticatedModelRuntime();
 
 		const extensionsResult = await createTestExtensionsResult([
 			(pi) => {
@@ -255,7 +258,7 @@ describe("AgentSession concurrent prompt guard", () => {
 			sessionManager,
 			settingsManager,
 			cwd: tempDir,
-			modelRuntime: getModelRuntime(modelRegistry),
+			modelRuntime,
 			resourceLoader: createTestResourceLoader({ extensionsResult }),
 		});
 		session.subscribe((event) => {
@@ -313,16 +316,14 @@ describe("AgentSession concurrent prompt guard", () => {
 
 		const sessionManager = SessionManager.inMemory();
 		const settingsManager = SettingsManager.create(tempDir, tempDir);
-		const authStorage = AuthStorage.create(join(tempDir, "auth.json"));
-		const modelRegistry = await createModelRegistry(authStorage, tempDir);
-		await authStorage.modify("anthropic", async () => ({ type: "api_key", key: "test-key" }));
+		const modelRuntime = await createAuthenticatedModelRuntime();
 
 		session = new AgentSession({
 			agent,
 			sessionManager,
 			settingsManager,
 			cwd: tempDir,
-			modelRuntime: getModelRuntime(modelRegistry),
+			modelRuntime,
 			resourceLoader: createTestResourceLoader(),
 		});
 
@@ -419,16 +420,14 @@ describe("AgentSession concurrent prompt guard", () => {
 
 		const sessionManager = SessionManager.inMemory();
 		const settingsManager = SettingsManager.create(tempDir, tempDir);
-		const authStorage = AuthStorage.create(join(tempDir, "auth.json"));
-		const modelRegistry = await createModelRegistry(authStorage, tempDir);
-		await authStorage.modify("anthropic", async () => ({ type: "api_key", key: "test-key" }));
+		const modelRuntime = await createAuthenticatedModelRuntime();
 
 		session = new AgentSession({
 			agent,
 			sessionManager,
 			settingsManager,
 			cwd: tempDir,
-			modelRuntime: getModelRuntime(modelRegistry),
+			modelRuntime,
 			resourceLoader: createTestResourceLoader(),
 			baseToolsOverride: { dummy: tool },
 		});
@@ -566,16 +565,14 @@ describe("AgentSession concurrent prompt guard", () => {
 
 		const sessionManager = SessionManager.inMemory();
 		const settingsManager = SettingsManager.create(tempDir, tempDir);
-		const authStorage = AuthStorage.create(join(tempDir, "auth.json"));
-		const modelRegistry = await createModelRegistry(authStorage, tempDir);
-		await authStorage.modify("anthropic", async () => ({ type: "api_key", key: "test-key" }));
+		const modelRuntime = await createAuthenticatedModelRuntime();
 
 		session = new AgentSession({
 			agent,
 			sessionManager,
 			settingsManager,
 			cwd: tempDir,
-			modelRuntime: getModelRuntime(modelRegistry),
+			modelRuntime,
 			resourceLoader: createTestResourceLoader(),
 			baseToolsOverride: { dummy: tool },
 		});

@@ -60,17 +60,20 @@ describe("buildSystemPrompt", () => {
 			expect(prompt).toContain(expected);
 		});
 
-		test("instructs models to resolve pi docs and examples under absolute base paths", () => {
+		test("identifies the product and resolves its docs and examples under absolute base paths", () => {
 			const prompt = buildSystemPrompt({
 				contextFiles: [],
 				skills: [],
 				cwd: process.cwd(),
 			});
 
+			expect(prompt).toContain("inside TRPI, a TrustedRouter-first fork of the Pi coding agent harness");
+			expect(prompt).toContain("TRPI documentation");
 			expect(prompt).toContain(
-				"- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory",
+				"- When reading TRPI docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory",
 			);
 			expect(prompt).toContain("environment variables (docs/environment-variables.md)");
+			expect(prompt).not.toContain("operating inside pi");
 		});
 	});
 

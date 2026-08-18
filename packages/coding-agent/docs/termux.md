@@ -1,6 +1,6 @@
 # Termux (Android) Setup
 
-Pi runs on Android via [Termux](https://termux.dev/), a terminal emulator and Linux environment for Android.
+TRPI runs on Android via [Termux](https://termux.dev/), a terminal emulator and Linux environment for Android.
 
 ## Prerequisites
 
@@ -16,14 +16,21 @@ pkg update && pkg upgrade
 # Install dependencies
 pkg install nodejs termux-api git
 
-# Install pi
-npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+# Build TRPI from the public source repository
+git clone https://github.com/Lore-Hex/trpi.git
+cd trpi
+npm ci --ignore-scripts
+npm run hydrate:model-data
+npm run build:offline
+
+# Put the built CLI on Termux's PATH
+ln -sf "$PWD/packages/coding-agent/dist/cli.js" "$PREFIX/bin/trpi"
 
 # Create config directory
-mkdir -p ~/.pi/agent
+mkdir -p ~/.trpi/agent
 
-# Run pi
-pi
+# Run TRPI
+trpi
 ```
 
 ## Clipboard Support
@@ -34,7 +41,7 @@ Image clipboard is not supported on Termux (the `ctrl+v` image paste feature wil
 
 ## Example AGENTS.md for Termux
 
-Create `~/.pi/agent/AGENTS.md` to help the agent understand the Termux environment:
+Create `~/.trpi/agent/AGENTS.md` to help the agent understand the Termux environment:
 
 ````markdown
 # Agent Environment: Termux on Android

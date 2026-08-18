@@ -561,9 +561,14 @@ export interface MainOptions {
 export async function main(args: string[], options?: MainOptions) {
 	resetTimings();
 	const extensionFactories = [...builtInExtensions, ...(options?.extensionFactories ?? [])];
-	const offlineMode = args.includes("--offline") || isTruthyEnvFlag(process.env.PI_OFFLINE);
+	const offlineMode =
+		args.includes("--offline") ||
+		isTruthyEnvFlag(process.env.TRPI_OFFLINE) ||
+		isTruthyEnvFlag(process.env.PI_OFFLINE);
 	if (offlineMode) {
+		process.env.TRPI_OFFLINE = "1";
 		process.env.PI_OFFLINE = "1";
+		process.env.TRPI_SKIP_VERSION_CHECK = "1";
 		process.env.PI_SKIP_VERSION_CHECK = "1";
 	}
 
@@ -784,6 +789,32 @@ export async function main(args: string[], options?: MainOptions) {
 			})),
 		];
 
+		// TrustedRouter is this fork's primary provider, so load its public live catalog
+		// before resolving --model, --models, --list-models, or the initial selection.
+		// The provider restores its persisted catalog during service creation, making a
+		// network failure non-fatal while its bundled aliases remain available offline.
+		if (isInitialRuntime && !offlineMode && !parsed.help) {
+			try {
+				const result = await modelRuntime.refresh({
+					allowNetwork: true,
+					providers: ["trustedrouter"],
+					signal: AbortSignal.timeout(15_000),
+				});
+				const error = result.errors.get("trustedrouter");
+				if (error) {
+					diagnostics.push({
+						type: "warning",
+						message: `Could not refresh the TrustedRouter model catalog: ${error.message}`,
+					});
+				}
+			} catch (error) {
+				diagnostics.push({
+					type: "warning",
+					message: `Could not refresh the TrustedRouter model catalog: ${error instanceof Error ? error.message : String(error)}`,
+				});
+			}
+		}
+
 		const modelPatterns = parsed.models ?? settingsManager.getEnabledModels();
 		const scopedModels =
 			modelPatterns && modelPatterns.length > 0
@@ -908,9 +939,10 @@ export async function main(args: string[], options?: MainOptions) {
 		process.exit(1);
 	}
 
-	const startupBenchmark = isTruthyEnvFlag(process.env.PI_STARTUP_BENCHMARK);
+	const startupBenchmark =
+		isTruthyEnvFlag(process.env.TRPI_STARTUP_BENCHMARK) || isTruthyEnvFlag(process.env.PI_STARTUP_BENCHMARK);
 	if (startupBenchmark && appMode !== "interactive") {
-		console.error(chalk.red("Error: PI_STARTUP_BENCHMARK only supports interactive mode"));
+		console.error(chalk.red("Error: TRPI_STARTUP_BENCHMARK only supports interactive mode"));
 		process.exit(1);
 	}
 
