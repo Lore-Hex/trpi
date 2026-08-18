@@ -2,8 +2,11 @@ import { compare, valid } from "semver";
 import { fetchWithRetry } from "./management-http.ts";
 import { getPiUserAgent } from "./pi-user-agent.ts";
 
-const LATEST_VERSION_URL = "https://pi.dev/api/latest-version";
 const DEFAULT_VERSION_CHECK_TIMEOUT_MS = 10000;
+
+function getLatestVersionUrl(): string {
+	return process.env.TRPI_LATEST_VERSION_URL ?? "https://api.github.com/repos/Lore-Hex/trpi/releases/latest";
+}
 
 export interface LatestPiRelease {
 	version: string;
@@ -52,10 +55,10 @@ export async function getLatestPiRelease(
 	currentVersion: string,
 	options: { timeoutMs?: number; retry?: boolean } = {},
 ): Promise<LatestPiRelease | undefined> {
-	if (process.env.PI_OFFLINE) return undefined;
+	if (process.env.TRPI_OFFLINE || process.env.PI_OFFLINE) return undefined;
 
 	const response = await fetchWithRetry(
-		LATEST_VERSION_URL,
+		getLatestVersionUrl(),
 		{
 			headers: {
 				"User-Agent": getPiUserAgent(currentVersion),
@@ -70,18 +73,22 @@ export async function getLatestPiRelease(
 	if (!response.ok) return undefined;
 
 	const data = (await response.json()) as {
+		name?: unknown;
 		packageName?: unknown;
+		tag_name?: unknown;
 		version?: unknown;
 		note?: unknown;
 	};
-	if (typeof data.version !== "string" || !data.version.trim()) {
+	const rawVersion = typeof data.version === "string" ? data.version : data.tag_name;
+	if (typeof rawVersion !== "string" || !rawVersion.trim()) {
 		return undefined;
 	}
-	const packageName =
-		typeof data.packageName === "string" && data.packageName.trim() ? data.packageName.trim() : undefined;
+	const version = rawVersion.trim().replace(/^v/, "");
+	const rawPackageName = data.packageName ?? (data.tag_name === undefined ? data.name : undefined);
+	const packageName = typeof rawPackageName === "string" && rawPackageName.trim() ? rawPackageName.trim() : undefined;
 	const note = typeof data.note === "string" && data.note.trim() ? data.note.trim() : undefined;
 	return {
-		version: data.version.trim(),
+		version,
 		packageName,
 		...(note ? { note } : {}),
 	};
@@ -95,7 +102,7 @@ export async function getLatestPiVersion(
 }
 
 export async function checkForNewPiVersion(currentVersion: string): Promise<LatestPiRelease | undefined> {
-	if (process.env.PI_SKIP_VERSION_CHECK) return undefined;
+	if (process.env.TRPI_SKIP_VERSION_CHECK || process.env.PI_SKIP_VERSION_CHECK) return undefined;
 
 	try {
 		const latestRelease = await getLatestPiRelease(currentVersion);

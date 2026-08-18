@@ -1,3 +1,4 @@
+/** Read-only GitHub metadata widget for maintainer prompts. */
 import { readFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { resolve } from "node:path";
@@ -225,10 +226,6 @@ export default function promptUrlWidgetExtension(pi: ExtensionAPI) {
 		}
 
 		updatePromptContext(ctx, match);
-	});
-
-	pi.on("session_switch", async (_event, ctx) => {
-		rebuildFromSession(ctx);
 	});
 
 	const getUserText = (content: string | { type: string; text?: string }[] | undefined): string => {

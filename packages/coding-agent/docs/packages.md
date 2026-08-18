@@ -1,14 +1,14 @@
-> pi can help you create pi packages. Ask it to bundle your extensions, skills, prompt templates, or themes.
+> TRPI can help you create compatible packages. Ask it to bundle your extensions, skills, prompt templates, or themes.
 
-# Pi Packages
+# TRPI Packages
 
-Pi packages bundle extensions, skills, prompt templates, and themes so you can share them through npm or git. A package can declare resources in `package.json` under the `pi` key, or use conventional directories.
+TRPI packages bundle extensions, skills, prompt templates, and themes so you can share them through npm or git. They retain Pi's package format: a package can declare resources in `package.json` under the `pi` key, or use conventional directories.
 
 ## Table of Contents
 
 - [Install and Manage](#install-and-manage)
 - [Package Sources](#package-sources)
-- [Creating a Pi Package](#creating-a-pi-package)
+- [Creating a TRPI Package](#creating-a-trpi-package)
 - [Package Structure](#package-structure)
 - [Dependencies](#dependencies)
 - [Package Filtering](#package-filtering)
@@ -17,41 +17,41 @@ Pi packages bundle extensions, skills, prompt templates, and themes so you can s
 
 ## Install and Manage
 
-> **Security:** Pi packages run with full system access. Extensions execute arbitrary code, and skills can instruct the model to perform any action including running executables. Review source code before installing third-party packages.
+> **Security:** TRPI packages run with full system access. Extensions execute arbitrary code, and skills can instruct the model to perform any action including running executables. Review source code before installing third-party packages.
 
 ```bash
-pi install npm:@foo/bar@1.0.0
-pi install git:github.com/user/repo@v1
-pi install https://github.com/user/repo  # raw URLs work too
-pi install /absolute/path/to/package
-pi install ./relative/path/to/package
+trpi install npm:@foo/bar@1.0.0
+trpi install git:github.com/user/repo@v1
+trpi install https://github.com/user/repo  # raw URLs work too
+trpi install /absolute/path/to/package
+trpi install ./relative/path/to/package
 
-pi remove npm:@foo/bar
-pi list                     # show installed packages from settings
-pi update                   # update pi only
-pi update --all             # update pi, update packages, and reconcile pinned git refs
-pi update --extensions      # update packages and reconcile pinned git refs only
-pi update --models          # refresh model catalogs only
-pi update --self            # update pi only
-pi update --self --force    # reinstall pi even if current
-pi update npm:@foo/bar      # update one package
-pi update --extension npm:@foo/bar
+trpi remove npm:@foo/bar
+trpi list                     # show installed packages from settings
+trpi update                   # update TRPI only
+trpi update --all             # update TRPI, update packages, and reconcile pinned git refs
+trpi update --extensions      # update packages and reconcile pinned git refs only
+trpi update --models          # refresh model catalogs only
+trpi update --self            # update TRPI only
+trpi update --self --force    # reinstall TRPI even if current
+trpi update npm:@foo/bar      # update one package
+trpi update --extension npm:@foo/bar
 ```
 
-These commands manage pi packages and `pi update` can update the pi CLI installation. To uninstall pi itself, see [Quickstart](quickstart.md#uninstall).
+These commands manage TRPI packages, and `trpi update` can update a supported TRPI CLI installation. They do not uninstall the CLI itself; remove the extracted release directory or source-built CLI link to uninstall TRPI.
 
-By default, `install` and `remove` write to user settings (`~/.pi/agent/settings.json`). Use `-l` to write to project settings (`.pi/settings.json`) instead. Project settings can be shared with your team, and pi installs any missing packages automatically on startup after the project is trusted.
+By default, `install` and `remove` write to user settings (`~/.trpi/agent/settings.json`). Use `-l` to write to project settings (`.trpi/settings.json`) instead. Project settings can be shared with your team, and TRPI installs any missing packages automatically on startup after the project is trusted.
 
 To try a package without installing it, use `--extension` or `-e`. This installs to a temporary directory for the current run only:
 
 ```bash
-pi -e npm:@foo/bar
-pi -e git:github.com/user/repo
+trpi -e npm:@foo/bar
+trpi -e git:github.com/user/repo
 ```
 
 ## Package Sources
 
-Pi accepts three source types in settings and `pi install`.
+TRPI accepts three source types in settings and `trpi install`.
 
 ### npm
 
@@ -60,9 +60,9 @@ npm:@scope/pkg@1.2.3
 npm:pkg
 ```
 
-- Versioned specs are pinned and skipped by package updates (`pi update --extensions`, `pi update --all`).
-- User installs go under `~/.pi/agent/npm/`.
-- Project installs go under `.pi/npm/`.
+- Versioned specs are pinned and skipped by package updates (`trpi update --extensions`, `trpi update --all`).
+- User installs go under `~/.trpi/agent/npm/`.
+- Project installs go under `.trpi/npm/`.
 - Set `npmCommand` in `settings.json` to pin npm package lookup and install operations to a specific wrapper command such as `mise` or `asdf`.
 
 Example:
@@ -87,21 +87,21 @@ ssh://git@github.com/user/repo@v1
 - HTTPS and SSH URLs are both supported.
 - SSH URLs use your configured SSH keys automatically (respects `~/.ssh/config`).
 - For non-interactive runs (for example CI), you can set `GIT_TERMINAL_PROMPT=0` to disable credential prompts and set `GIT_SSH_COMMAND` (for example `ssh -o BatchMode=yes -o ConnectTimeout=5`) to fail fast.
-- Refs are pinned tags or commits. `pi update --extensions` and `pi update --all` do not move them to newer refs, but they do reconcile an existing clone to the configured ref.
-- Use `pi install git:host/user/repo@new-ref` to update settings and move an existing package to a new pinned ref.
-- Cloned to `~/.pi/agent/git/<host>/<path>` (global) or `.pi/git/<host>/<path>` (project).
-- When reconciliation changes the checkout, pi resets and cleans the clone, then runs `npm install` if `package.json` exists.
+- Refs are pinned tags or commits. `trpi update --extensions` and `trpi update --all` do not move them to newer refs, but they do reconcile an existing clone to the configured ref.
+- Use `trpi install git:host/user/repo@new-ref` to update settings and move an existing package to a new pinned ref.
+- Cloned to `~/.trpi/agent/git/<host>/<path>` (global) or `.trpi/git/<host>/<path>` (project).
+- When reconciliation changes the checkout, TRPI resets and cleans the clone, then runs `npm install` if `package.json` exists.
 
 **SSH examples:**
 ```bash
 # git@host:path shorthand (requires git: prefix)
-pi install git:git@github.com:user/repo
+trpi install git:git@github.com:user/repo
 
 # ssh:// protocol format
-pi install ssh://git@github.com/user/repo
+trpi install ssh://git@github.com/user/repo
 
 # With version ref
-pi install git:git@github.com:user/repo@v1.0.0
+trpi install git:git@github.com:user/repo@v1.0.0
 ```
 
 ### Local Paths
@@ -111,11 +111,11 @@ pi install git:git@github.com:user/repo@v1.0.0
 ./relative/path/to/package
 ```
 
-Local paths point to files or directories on disk and are added to settings without copying. Relative paths are resolved against the settings file they appear in. If the path is a file, it loads as a single extension. If it is a directory, pi loads resources using package rules.
+Local paths point to files or directories on disk and are added to settings without copying. Relative paths are resolved against the settings file they appear in. If the path is a file, it loads as a single extension. If it is a directory, TRPI loads resources using package rules.
 
-## Creating a Pi Package
+## Creating a TRPI Package
 
-Add a `pi` manifest to `package.json` or use conventional directories. Include the `pi-package` keyword for discoverability.
+Add the Pi-compatible `pi` manifest to `package.json` or use conventional directories. Keep the `pi-package` keyword for compatibility with existing Pi package tooling.
 
 ```json
 {
@@ -132,32 +132,11 @@ Add a `pi` manifest to `package.json` or use conventional directories. Include t
 
 Paths are relative to the package root. Arrays support glob patterns and `!exclusions`.
 
-### Gallery Metadata
-
-The [package gallery](https://pi.dev/packages) displays packages tagged with `pi-package`. Add `video` or `image` fields to show a preview:
-
-```json
-{
-  "name": "my-package",
-  "keywords": ["pi-package"],
-  "pi": {
-    "extensions": ["./extensions"],
-    "video": "https://example.com/demo.mp4",
-    "image": "https://example.com/screenshot.png"
-  }
-}
-```
-
-- **video**: MP4 only. On desktop, autoplays on hover. Clicking opens a fullscreen player.
-- **image**: PNG, JPEG, GIF, or WebP. Displayed as a static preview.
-
-If both are set, video takes precedence.
-
 ## Package Structure
 
 ### Convention Directories
 
-If no `pi` manifest is present, pi auto-discovers resources from these directories:
+If no `pi` manifest is present, TRPI auto-discovers resources from these directories:
 
 - `extensions/` loads `.ts` and `.js` files
 - `skills/` recursively finds `SKILL.md` folders and loads top-level `.md` files as skills
@@ -166,11 +145,11 @@ If no `pi` manifest is present, pi auto-discovers resources from these directori
 
 ## Dependencies
 
-Third party runtime dependencies belong in `dependencies` in `package.json`. Dependencies that do not register extensions, skills, prompt templates, or themes also belong in `dependencies`. When pi installs a package from npm or git, it runs `npm install`, so those dependencies are installed automatically.
+Third party runtime dependencies belong in `dependencies` in `package.json`. Dependencies that do not register extensions, skills, prompt templates, or themes also belong in `dependencies`. When TRPI installs a package from npm or git, it runs `npm install`, so those dependencies are installed automatically.
 
-Pi bundles core packages for extensions and skills. If you import any of these, list them in `peerDependencies` with a `"*"` range and do not bundle them: `@earendil-works/pi-ai`, `@earendil-works/pi-agent-core`, `@earendil-works/pi-coding-agent`, `@earendil-works/pi-tui`, `typebox`.
+TRPI bundles Pi's upstream core packages for extensions and skills. If you import any of these, list them in `peerDependencies` with a `"*"` range and do not bundle them: `@earendil-works/pi-ai`, `@earendil-works/pi-agent-core`, `@earendil-works/pi-coding-agent`, `@earendil-works/pi-tui`, `typebox`.
 
-Other pi packages must be bundled in your tarball. Add them to `dependencies` and `bundledDependencies`, then reference their resources through `node_modules/` paths. Pi loads packages with separate module roots, so separate installs do not collide or share modules.
+Other compatible Pi packages must be bundled in your tarball. Add them to `dependencies` and `bundledDependencies`, then reference their resources through `node_modules/` paths. TRPI loads packages with separate module roots, so separate installs do not collide or share modules.
 
 Example:
 
@@ -217,7 +196,7 @@ Filter what a package loads using the object form in settings:
 
 ## Enable and Disable Resources
 
-Use `pi config` to enable or disable extensions, skills, prompt templates, and themes from installed packages and local directories. `pi config` starts in global settings (`~/.pi/agent/settings.json`); press Tab to switch between global and project-local modes. Use `pi config -l` to start in project overrides (`.pi/settings.json`) with inherited global resources dimmed.
+Use `trpi config` to enable or disable extensions, skills, prompt templates, and themes from installed packages and local directories. `trpi config` starts in global settings (`~/.trpi/agent/settings.json`); press Tab to switch between global and project-local modes. Use `trpi config -l` to start in project overrides (`.trpi/settings.json`) with inherited global resources dimmed.
 
 ## Scope and Deduplication
 

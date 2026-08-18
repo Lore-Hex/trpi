@@ -4,6 +4,7 @@
 
 ### Added
 
+- Added the TrustedRouter-first TRPI distribution, including the `trpi` CLI, isolated `.trpi` configuration, live TrustedRouter model selection, and a tool-tested coding default.
 - Added transcript usage notices for compaction and branch summaries when cache miss notices are enabled.
 
 ### Fixed

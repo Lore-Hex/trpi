@@ -1,5 +1,6 @@
-import { describe, expect, test } from "vitest";
-import { normalizeSessionName, parseArgs } from "../src/cli/args.ts";
+import { describe, expect, test, vi } from "vitest";
+import { normalizeSessionName, parseArgs, printHelp } from "../src/cli/args.ts";
+import { APP_NAME } from "../src/config.ts";
 
 describe("parseArgs", () => {
 	describe("--version flag", () => {
@@ -496,5 +497,20 @@ describe("parseArgs", () => {
 			expect(result.fileArgs).toEqual(["prompt.md"]);
 			expect(result.messages).toEqual(["Do the task"]);
 		});
+	});
+});
+
+describe("printHelp", () => {
+	test("documents the branded update target without advertising the legacy pi alias", () => {
+		const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+
+		try {
+			printHelp();
+			const stdout = logSpy.mock.calls.map(([message]) => String(message)).join("\n");
+			expect(stdout).toContain(`${APP_NAME} update [source|self|${APP_NAME}]`);
+			expect(stdout).not.toContain(`${APP_NAME} update [source|self|pi]`);
+		} finally {
+			logSpy.mockRestore();
+		}
 	});
 });

@@ -8,6 +8,7 @@
 
 ### Added
 
+- Added TrustedRouter as a built-in OpenAI Chat Completions provider with live model discovery, safe compatibility metadata, and API-key environment aliases.
 - Added provider-neutral `toolChoice` support to simple stream requests.
 - Added China-specific ZAI Coding Plan models, including GLM-4.6V vision support, and API-equivalent usage cost estimates for models with published PAYG prices ([#8220](https://github.com/earendil-works/pi/issues/8220)).
 

@@ -76,6 +76,10 @@ function getApiKeyEnvVars(provider: string): readonly string[] | undefined {
 		return [ANTHROPIC_AUTH_TOKEN_ENV, ANTHROPIC_OAUTH_TOKEN_ENV, ANTHROPIC_API_KEY_ENV];
 	}
 
+	if (provider === "trustedrouter") {
+		return ["TRUSTEDROUTER_API_KEY", "TR_API_KEY", "TRUSTED_ROUTER_API_KEY"];
+	}
+
 	const envMap: Record<string, string> = {
 		"ant-ling": "ANT_LING_API_KEY",
 		"qwen-token-plan": "QWEN_TOKEN_PLAN_API_KEY",

@@ -19,10 +19,10 @@ describe("normalizeChangelogLinks", () => {
 
 		expect(normalizeChangelogLinks(markdown, entry)).toBe(
 			[
-				"[Project Trust](https://github.com/earendil-works/pi/blob/v0.79.0/packages/coding-agent/README.md#project-trust)",
-				"[Extensions](https://github.com/earendil-works/pi/blob/v0.79.0/packages/coding-agent/docs/extensions.md#project_trust)",
-				"[Examples](https://github.com/earendil-works/pi/tree/v0.79.0/packages/coding-agent/examples/extensions/)",
-				"[Root README](https://github.com/earendil-works/pi/blob/v0.79.0/README.md#supply-chain-hardening)",
+				"[Project Trust](https://github.com/Lore-Hex/trpi/blob/v0.79.0/packages/coding-agent/README.md#project-trust)",
+				"[Extensions](https://github.com/Lore-Hex/trpi/blob/v0.79.0/packages/coding-agent/docs/extensions.md#project_trust)",
+				"[Examples](https://github.com/Lore-Hex/trpi/tree/v0.79.0/packages/coding-agent/examples/extensions/)",
+				"[Root README](https://github.com/Lore-Hex/trpi/blob/v0.79.0/README.md#supply-chain-hardening)",
 			].join("\n"),
 		);
 	});
@@ -44,6 +44,14 @@ describe("normalizeChangelogLinks", () => {
 				"[External](https://example.com/docs)",
 				"[Local anchor](#settings)",
 			].join("\n"),
+		);
+	});
+
+	test("pins absolute TRPI source links without rerouting them upstream", () => {
+		const markdown = "[TRPI README](https://github.com/Lore-Hex/trpi/blob/main/README.md#quick-start)";
+
+		expect(normalizeChangelogLinks(markdown, "0.79.0")).toBe(
+			"[TRPI README](https://github.com/Lore-Hex/trpi/blob/v0.79.0/README.md#quick-start)",
 		);
 	});
 });

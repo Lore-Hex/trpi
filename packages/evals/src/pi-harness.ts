@@ -12,7 +12,7 @@ import {
 	ModelRuntime,
 	SessionManager,
 	SettingsManager,
-} from "@earendil-works/pi-coding-agent";
+} from "trpi-coding-agent";
 import {
 	createHarness,
 	type Harness,

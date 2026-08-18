@@ -24,6 +24,9 @@ if [[ "$NO_ENV" == "true" ]]; then
   unset CEREBRAS_API_KEY
   unset XAI_API_KEY
   unset OPENROUTER_API_KEY
+  unset TRUSTEDROUTER_API_KEY
+  unset TR_API_KEY
+  unset TRUSTED_ROUTER_API_KEY
   unset ZAI_API_KEY
   unset MISTRAL_API_KEY
   unset MINIMAX_API_KEY

@@ -568,9 +568,9 @@ export class SettingsSelectorComponent extends Container {
 				values: ["true", "false"],
 			},
 			{
-				id: "install-telemetry",
-				label: "Install telemetry",
-				description: "Send an anonymous version/update ping after changelog-detected updates",
+				id: "provider-attribution",
+				label: "Provider attribution",
+				description: "Send optional TRPI attribution headers to providers that support them",
 				currentValue: config.enableInstallTelemetry ? "true" : "false",
 				values: ["true", "false"],
 			},
@@ -829,7 +829,7 @@ export class SettingsSelectorComponent extends Container {
 					case "quiet-startup":
 						callbacks.onQuietStartupChange(newValue === "true");
 						break;
-					case "install-telemetry":
+					case "provider-attribution":
 						callbacks.onEnableInstallTelemetryChange(newValue === "true");
 						break;
 					case "default-project-trust": {

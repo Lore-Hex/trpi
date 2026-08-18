@@ -1,114 +1,87 @@
-<p align="center">
-  <a href="https://pi.dev">
-    <img alt="pi logo" src="https://pi.dev/logo-auto.svg" width="128">
-  </a>
-</p>
-<p align="center">
-  <a href="https://discord.com/invite/3cU7Bz4UPx"><img alt="Discord" src="https://img.shields.io/badge/discord-community-5865F2?style=flat-square&logo=discord&logoColor=white" /></a>
-  <a href="https://www.npmjs.com/package/@earendil-works/pi-coding-agent"><img alt="npm" src="https://img.shields.io/npm/v/@earendil-works/pi-coding-agent?style=flat-square" /></a>
-</p>
+# TRPI
 
-> New issues and PRs from new contributors are auto-closed by default. Maintainers review auto-closed issues daily. See [CONTRIBUTING.md](CONTRIBUTING.md).
+TRPI is a TrustedRouter-first distribution of the [Pi Agent Harness](https://github.com/earendil-works/pi). It keeps Pi's terminal workflow, tools, sessions, extensions, and mid-session model switching while making `trustedrouter` the primary provider.
 
-# Pi Agent Harness
+The command is `trpi`, user state lives under `~/.trpi/agent`, and the CLI workspace package is named `trpi-coding-agent`. The public repository is [Lore-Hex/trpi](https://github.com/Lore-Hex/trpi).
 
-This is the home of the Pi agent harness project including our self extensible coding agent.
+## Tagged binaries
 
-* **[@earendil-works/pi-coding-agent](packages/coding-agent)**: Interactive coding agent CLI
-* **[@earendil-works/pi-agent-core](packages/agent)**: Agent runtime with tool calling and state management
-* **[@earendil-works/pi-ai](packages/ai)**: Unified multi-provider LLM API (OpenAI, Anthropic, Google, …)
+Tagged builds are published through [GitHub Releases](https://github.com/Lore-Hex/trpi/releases). Verify an archive against the release's `SHA256SUMS` before extracting it. Until the first tagged build is available, use the source installation below.
 
-To learn more about Pi:
+## Quick start from source
 
-* [Visit pi.dev](https://pi.dev), the project website with demos
-* [Read the documentation](https://pi.dev/docs/latest), but you can also ask the agent to explain itself
+Requires Node.js 22.19 or newer.
 
-## All Packages
+```bash
+npm ci --ignore-scripts
+npm run hydrate:model-data
+npm run build:offline
+npm link --workspace trpi-coding-agent --ignore-scripts
+export TRUSTEDROUTER_API_KEY="your-api-key"
+trpi
+```
+
+Use `/model` or Ctrl+L to open the model selector. You can also select a model at startup or inspect the available catalog:
+
+```bash
+trpi --list-models
+trpi --provider trustedrouter --model <model-id>
+```
+
+TrustedRouter uses `TRUSTEDROUTER_API_KEY`; `TR_API_KEY` is also accepted as a short compatibility alias. Its inference API is `https://api.trustedrouter.com/v1` and its public model catalog is `https://trustedrouter.com/v1/models`.
+
+The default TrustedRouter coding model is `openai/gpt-5.4-mini`, which has been verified with TRPI's tool loop. `trustedrouter/auto` remains available for chat and explicit selection, but it is not coding-safe until TrustedRouter's automatic routing is capability-aware: it can currently route tool-bearing requests to models without tool support. TRPI also omits OpenRouter-style reasoning controls from TrustedRouter requests because some routed upstreams reject them.
+
+## Configuration
+
+| Location | Purpose |
+|---|---|
+| `~/.trpi/agent/settings.json` | Global settings |
+| `~/.trpi/agent/models.json` | Custom providers and models |
+| `~/.trpi/agent/sessions/` | Saved sessions |
+| `.trpi/settings.json` | Project-local settings |
+
+TRPI retains Pi's four execution modes: interactive, print/JSON, RPC, and the embeddable SDK. See the [coding-agent documentation](packages/coding-agent/README.md) for the full CLI and extension reference.
+
+## Packages
 
 | Package | Description |
-|---------|-------------|
-| **[@earendil-works/pi-telemetry](packages/telemetry)** | Vendor-neutral telemetry contracts, reference adapter, conformance tests, and typed schemas |
-| **[@earendil-works/pi-ai](packages/ai)** | Unified multi-provider LLM API (OpenAI, Anthropic, Google, etc.) |
-| **[@earendil-works/pi-agent-core](packages/agent)** | Agent runtime with tool calling and state management |
-| **[@earendil-works/pi-coding-agent](packages/coding-agent)** | Interactive coding agent CLI |
-| **[@earendil-works/pi-tui](packages/tui)** | Terminal UI library with differential rendering |
+|---|---|
+| [`trpi-coding-agent`](packages/coding-agent) | TrustedRouter-first interactive coding agent CLI |
+| [`@earendil-works/pi-agent-core`](packages/agent) | Upstream agent runtime with tool calling and state management |
+| [`@earendil-works/pi-ai`](packages/ai) | Upstream multi-provider LLM API |
+| [`@earendil-works/pi-tui`](packages/tui) | Upstream terminal UI library |
+| [`@earendil-works/pi-telemetry`](packages/telemetry) | Vendor-neutral telemetry contracts and schemas |
 
-For Slack/chat automation and workflows see [earendil-works/pi-chat](https://github.com/earendil-works/pi-chat).
+The upstream package scopes remain in place where they are part of the reusable Pi libraries and extension API. This keeps existing extensions source-compatible while the standalone CLI has its own identity and configuration directory.
 
-## Permissions & Containerization
+## Security
 
-Pi does not include a built-in permission system for restricting filesystem, process, network, or credential access. By default, it runs with the permissions of the user and process that launched it.
-
-If you need stronger boundaries, containerize or sandbox Pi. See [packages/coding-agent/docs/containerization.md](packages/coding-agent/docs/containerization.md) for three patterns:
-
-- **Gondolin extension**: keep `pi` and provider auth on the host while routing built-in tools and `!` commands into a local Linux micro-VM.
-- **Plain Docker**: run the whole `pi` process in a local container for simple isolation.
-- **OpenShell**: run the whole `pi` process in a policy-controlled sandbox.
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines and [AGENTS.md](AGENTS.md) for project-specific rules (for both humans and agents).  Longer term plans for Pi can also be found in [RFCs](https://rfc.earendil.com/keyword/pi/).
+TRPI runs with the permissions of the user and process that launched it. It does not add a built-in filesystem, process, network, or credential sandbox. For stronger boundaries, use a container or one of the patterns in [containerization.md](packages/coding-agent/docs/containerization.md).
 
 ## Development
 
 ```bash
-npm install --ignore-scripts  # Install all dependencies without running lifecycle scripts
-npm run build         # Refresh model data, then build all packages
-npm run build:offline # Rebuild using existing model data without network access
-npm run check         # Lint, format, and type check
-./test.sh            # Run tests (skips LLM-dependent tests without API keys)
-./pi-test.sh         # Run pi from sources (can be run from any directory)
+npm ci --ignore-scripts       # Install the locked dependencies
+npm run hydrate:model-data    # Fetch model metadata once after a Git clone
+npm run build:offline         # Build from the hydrated model data
+npm run check                 # Format, lint, validate generated locks, and type-check
+./test.sh                     # Run the isolated non-live test suite
+./pi-test.sh                  # Run the TRPI CLI directly from source
 ```
 
-## Building standalone binaries from release source
-
-GitHub releases include a versioned source archive covered by the release's `SHA256SUMS` file. Extract it and run the same build script used for the official standalone binaries:
+To build a standalone executable:
 
 ```bash
-VERSION="<release-version>"
-tar -xzf "pi-${VERSION}-source.tar.gz"
-cd "pi-${VERSION}"
-./scripts/build-binaries.sh --offline-model-data --platform linux-x64 --out "$PWD/out"
+npm --prefix packages/coding-agent run build:binary
 ```
 
-The source archive includes the generated provider model data used for the release. `--offline-model-data` builds with that snapshot instead of refreshing it from live provider catalogs. The script still installs dependencies, builds the monorepo, compiles the Bun executable, and stages its runtime assets. Package maintainers who provide dependencies separately can pass `--skip-install --skip-deps`.
+The executable is written to `packages/coding-agent/dist/trpi`.
 
-## Supply-chain hardening
+## Upstream and license
 
-We treat npm dependency changes as reviewed code changes.
+TRPI is a fork of Pi and preserves its MIT license and original author attribution. Upstream development lives at [earendil-works/pi](https://github.com/earendil-works/pi); Pi itself originates from [badlogic/pi-mono](https://github.com/badlogic/pi-mono).
 
-- Direct external dependencies are pinned to exact versions. Internal workspace packages remain version-ranged.
-- `.npmrc` sets `save-exact=true` and `min-release-age=2` to avoid same-day dependency releases during npm resolution.
-- `package-lock.json` is the dependency ground truth. Pre-commit blocks accidental lockfile commits unless `PI_ALLOW_LOCKFILE_CHANGE=1` is set.
-- `npm run check` verifies pinned direct deps, native TypeScript import compatibility, and the generated coding-agent shrinkwrap.
-- The published CLI package includes `packages/coding-agent/npm-shrinkwrap.json`, generated from the root lockfile, to pin transitive deps for npm users.
-- Release smoke tests use `npm run release:local` to build, pack, and create isolated npm and Bun installs outside the repo before tagging a release.
-- Local release installs, documented npm installs, and `pi update --self` use `--ignore-scripts` where supported.
-- CI installs with `npm ci --ignore-scripts`, and a scheduled GitHub workflow runs `npm audit --omit=dev` plus `npm audit signatures --omit=dev`.
-- Shrinkwrap generation has an explicit allowlist for dependency lifecycle scripts; new lifecycle-script deps fail checks until reviewed.
-
-## Share your OSS coding agent sessions
-
-If you use Pi or other coding agents for open source work, please share your sessions.
-
-Public OSS session data helps improve coding agents with real-world tasks, tool use, failures, and fixes instead of toy benchmarks.
-
-For the full explanation, see [this post on X](https://x.com/badlogicgames/status/2037811643774652911).
-
-To publish sessions, use [`badlogic/pi-share-hf`](https://github.com/badlogic/pi-share-hf). Read its README.md for setup instructions. All you need is a Hugging Face account, the Hugging Face CLI, and `pi-share-hf`.
-
-You can also watch [this video](https://x.com/badlogicgames/status/2041151967695634619), where I show how I publish my `pi-mono` sessions.
-
-I regularly publish my own `pi-mono` work sessions here:
-
-- [badlogicgames/pi-mono on Hugging Face](https://huggingface.co/datasets/badlogicgames/pi-mono)
-
-## License
+Changes specific to this distribution should be reported to [Lore-Hex/trpi](https://github.com/Lore-Hex/trpi/issues). Upstream Pi issues should continue to go to the upstream project.
 
 MIT
-
-<p align="center">
-  <a href="https://pi.dev">pi.dev</a> domain graciously donated by
-  <br /><br />
-  <a href="https://exe.dev"><img src="packages/coding-agent/docs/images/exy.png" alt="Exy mascot" width="48" /><br />exe.dev</a>
-</p>

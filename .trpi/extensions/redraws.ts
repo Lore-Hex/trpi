@@ -1,5 +1,5 @@
 /**
- * Redraws Extension
+ * TRPI Redraws Extension
  *
  * Exposes /tui to show TUI redraw stats.
  */

@@ -1,11 +1,11 @@
 {
-	"name": "@earendil-works/pi-coding-agent",
+	"name": "trpi-coding-agent",
 	"version": "0.84.2",
 	"lockfileVersion": 3,
 	"requires": true,
 	"packages": {
 		"": {
-			"name": "@earendil-works/pi-coding-agent",
+			"name": "trpi-coding-agent",
 			"version": "0.84.2",
 			"license": "MIT",
 			"dependencies": {
@@ -35,7 +35,7 @@
 				"@mariozechner/clipboard": "0.3.9"
 			},
 			"bin": {
-				"pi": "dist/cli.js"
+				"trpi": "dist/cli.js"
 			},
 			"engines": {
 				"node": ">=22.19.0"

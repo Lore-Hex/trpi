@@ -266,18 +266,22 @@ export class FooterDataProvider {
 		}
 	}
 
-	private clearGitWatchers(): void {
+	private clearNativeGitWatchers(): void {
 		closeWatcher(this.headWatcher);
 		this.headWatcher = null;
+		closeWatcher(this.reftableWatcher);
+		this.reftableWatcher = null;
+		closeWatcher(this.reftableTablesListWatcher);
+		this.reftableTablesListWatcher = null;
+	}
+
+	private clearGitWatchers(): void {
+		this.clearNativeGitWatchers();
 		if (this.headWatchFilePath && this.headWatchFileListener) {
 			unwatchFile(this.headWatchFilePath, this.headWatchFileListener);
 			this.headWatchFilePath = null;
 			this.headWatchFileListener = null;
 		}
-		closeWatcher(this.reftableWatcher);
-		this.reftableWatcher = null;
-		closeWatcher(this.reftableTablesListWatcher);
-		this.reftableTablesListWatcher = null;
 		if (this.reftableTablesListPath) {
 			unwatchFile(this.reftableTablesListPath);
 			this.reftableTablesListPath = null;
@@ -300,7 +304,9 @@ export class FooterDataProvider {
 	}
 
 	private handleGitWatcherError(): void {
-		this.clearGitWatchers();
+		// Keep watchFile polling active while native watchers recover. On macOS,
+		// fs.watch can emit EMFILE even though stat-based polling remains usable.
+		this.clearNativeGitWatchers();
 		this.scheduleGitWatcherRetry();
 	}
 
@@ -335,14 +341,15 @@ export class FooterDataProvider {
 			};
 			watchFile(this.headWatchFilePath, { interval: 1000 }, this.headWatchFileListener);
 		}
-		if (!this.headWatcher && !pollGitHead) {
+		const reftableDir = join(this.gitPaths.commonGitDir, "reftable");
+		const hasReftable = existsSync(reftableDir);
+		if (!this.headWatcher && !pollGitHead && !hasReftable) {
 			return;
 		}
 
 		// In reftable repos, branch switches update files in the reftable directory
 		// instead of HEAD. Watch it separately so the footer picks up those changes.
-		const reftableDir = join(this.gitPaths.commonGitDir, "reftable");
-		if (existsSync(reftableDir)) {
+		if (hasReftable) {
 			this.reftableWatcher = watchWithErrorHandler(
 				reftableDir,
 				() => {
@@ -350,10 +357,6 @@ export class FooterDataProvider {
 				},
 				() => this.handleGitWatcherError(),
 			);
-			if (!this.reftableWatcher) {
-				return;
-			}
-
 			const tablesListPath = join(reftableDir, "tables.list");
 			if (existsSync(tablesListPath)) {
 				this.reftableTablesListPath = tablesListPath;
@@ -364,9 +367,6 @@ export class FooterDataProvider {
 					},
 					() => this.handleGitWatcherError(),
 				);
-				if (!this.reftableTablesListWatcher) {
-					return;
-				}
 				watchFile(tablesListPath, { interval: 250 }, (current, previous) => {
 					if (
 						current.mtimeMs !== previous.mtimeMs ||
@@ -377,6 +377,10 @@ export class FooterDataProvider {
 					}
 				});
 			}
+
+			// Native watcher registration is asynchronous on some platforms. Reconcile
+			// once after setup so a branch switch in that startup window is not lost.
+			this.scheduleRefresh();
 		}
 	}
 }
