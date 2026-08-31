@@ -159,6 +159,9 @@ xcrun stapler validate "$DMG_PATH"
 codesign --verify --deep --strict --verbose=2 "$APP_BUNDLE"
 spctl --assess --type execute --verbose=2 "$APP_BUNDLE"
 spctl --assess --type open --context context:primary-signature --verbose=2 "$DMG_PATH"
-shasum -a 256 "$DMG_PATH" > "$DMG_PATH.sha256"
+(
+	cd "$OUTPUT_DIR"
+	shasum -a 256 "$(basename "$DMG_PATH")" > "$(basename "$DMG_PATH").sha256"
+)
 
 echo "$DMG_PATH"
