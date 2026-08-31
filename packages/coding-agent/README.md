@@ -66,7 +66,7 @@ Run `tr-cowork --help` for the full CLI reference.
 
 ## Models
 
-TrustedRouter is the default provider. Use `/model`, Ctrl+L, or the CLI to select a route:
+TrustedRouter is the default provider, and `trustedrouter/confidential` is the default route. Every TrustedRouter model request carries `provider.data_collection=deny` and the hard `provider.min_privacy=confidential` floor, so an unavailable confidential endpoint fails closed instead of silently downgrading. Use `/model`, Ctrl+L, or the CLI to select a route:
 
 ```bash
 tr-cowork --list-models trustedrouter

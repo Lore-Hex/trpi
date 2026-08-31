@@ -88,6 +88,10 @@ describe("TrustedRouter provider", () => {
 			sendSessionAffinityHeaders: false,
 			supportsLongCacheRetention: false,
 		});
+		expect(provider.getModels().every((model) => model.samplingParams?.provider)).toBe(true);
+		expect(provider.getModels()[0]?.samplingParams).toEqual({
+			provider: { data_collection: "deny", min_privacy: "confidential" },
+		});
 	});
 
 	it("discovers only TrustedRouter credentials in documented precedence order", async () => {
@@ -164,6 +168,9 @@ describe("TrustedRouter provider", () => {
 			input: ["text", "image"],
 			contextWindow: 131_072,
 			maxTokens: 32_768,
+			samplingParams: {
+				provider: { data_collection: "deny", min_privacy: "confidential" },
+			},
 		});
 		expect(selected?.cost.input).toBeCloseTo(2);
 		expect(selected?.cost.output).toBeCloseTo(6);
@@ -233,6 +240,10 @@ describe("TrustedRouter provider", () => {
 		expect(payload).toMatchObject({
 			model: "trustedrouter/auto",
 			max_tokens: 42,
+			provider: {
+				data_collection: "deny",
+				min_privacy: "confidential",
+			},
 		});
 		expect(wirePayload).not.toHaveProperty("reasoning");
 		expect(wirePayload).not.toHaveProperty("store");

@@ -5,7 +5,14 @@ import type { Model, OpenAICompletionsCompat } from "../types.ts";
 
 export const TRUSTEDROUTER_BASE_URL = "https://api.trustedrouter.com/v1";
 export const TRUSTEDROUTER_MODELS_URL = "https://trustedrouter.com/v1/models";
-export const TRUSTEDROUTER_CODING_MODEL_ID = "openai/gpt-5.4-mini";
+export const TRUSTEDROUTER_CODING_MODEL_ID = "trustedrouter/confidential";
+
+const CONFIDENTIAL_ROUTING = {
+	provider: {
+		data_collection: "deny",
+		min_privacy: "confidential",
+	},
+} as const;
 
 const TRUSTEDROUTER_COMPAT = {
 	supportsStore: false,
@@ -23,7 +30,7 @@ const TRUSTEDROUTER_COMPAT = {
 
 const CODING_MODEL: Model<"openai-completions"> = {
 	id: TRUSTEDROUTER_CODING_MODEL_ID,
-	name: "OpenAI: GPT-5.4 Mini",
+	name: "TrustedRouter Confidential",
 	api: "openai-completions",
 	provider: "trustedrouter",
 	baseUrl: TRUSTEDROUTER_BASE_URL,
@@ -32,6 +39,7 @@ const CODING_MODEL: Model<"openai-completions"> = {
 	cost: { input: 0.79125, output: 4.7475, cacheRead: 0, cacheWrite: 0 },
 	contextWindow: 400_000,
 	maxTokens: 16_384,
+	samplingParams: CONFIDENTIAL_ROUTING,
 	compat: TRUSTEDROUTER_COMPAT,
 };
 
@@ -46,6 +54,7 @@ const AUTO_MODEL: Model<"openai-completions"> = {
 	cost: { input: 0.07385, output: 0.1477, cacheRead: 0, cacheWrite: 0 },
 	contextWindow: 200_000,
 	maxTokens: 16_384,
+	samplingParams: CONFIDENTIAL_ROUTING,
 	compat: TRUSTEDROUTER_COMPAT,
 };
 
@@ -132,6 +141,7 @@ function catalogModel(value: unknown): Model<"openai-completions"> | undefined {
 		},
 		contextWindow,
 		maxTokens,
+		samplingParams: CONFIDENTIAL_ROUTING,
 		compat: TRUSTEDROUTER_COMPAT,
 	};
 }
