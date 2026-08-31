@@ -1,7 +1,7 @@
 /**
- * TRPI Notify Extension
+ * TR Confidential Cowork Notify Extension
  *
- * Sends a native terminal notification when TRPI is done and waiting for input.
+ * Sends a native terminal notification when TR Confidential Cowork is done and waiting for input.
  * Supports multiple terminal protocols:
  * - OSC 777: Ghostty, iTerm2, WezTerm, rxvt-unicode
  * - OSC 99: Kitty
@@ -49,9 +49,9 @@ function notify(title: string, body: string): void {
 }
 
 export default function (pi: ExtensionAPI) {
-	// `agent_end` fires after each low-level run; TRPI may still retry, compact,
+	// `agent_end` fires after each low-level run; TR Confidential Cowork may still retry, compact,
 	// or continue with queued follow-ups. Notify only after the full run settles.
 	pi.on("agent_settled", async () => {
-		notify("TRPI", "Ready for input");
+		notify("TR Confidential Cowork", "Ready for input");
 	});
 }

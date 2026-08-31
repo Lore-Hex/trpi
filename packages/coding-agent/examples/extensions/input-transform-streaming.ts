@@ -8,8 +8,8 @@
  * file changes, giving the model immediate context. During steering the
  * exec call is skipped so the correction reaches the model without delay.
  *
- * Start TRPI with this extension:
- *   trpi -e ./examples/extensions/input-transform-streaming.ts
+ * Start TR Confidential Cowork with this extension:
+ *   tr-cowork -e ./examples/extensions/input-transform-streaming.ts
  */
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 

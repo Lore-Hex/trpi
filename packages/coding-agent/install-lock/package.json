@@ -1,10 +1,10 @@
 {
-	"name": "@earendil-works/pi-coding-agent-install",
+	"name": "tr-confidential-cowork-install",
 	"version": "0.84.4",
 	"private": true,
-	"description": "Lockfile root used by the Pi installer and updater.",
+	"description": "Lockfile root used by the TR Confidential Cowork installer and updater.",
 	"dependencies": {
-		"@earendil-works/pi-coding-agent": "0.84.4"
+		"tr-confidential-cowork": "0.84.4"
 	},
 	"overrides": {
 		"protobufjs": "7.6.5",

@@ -1,10 +1,10 @@
 # JSON Event Stream Mode
 
 ```bash
-trpi --mode json "Your prompt"
+tr-cowork --mode json "Your prompt"
 ```
 
-Outputs all session events as JSON lines to stdout. Useful for integrating TRPI into other tools or custom UIs.
+Outputs all session events as JSON lines to stdout. Useful for integrating TR Confidential Cowork into other tools or custom UIs.
 
 ## Event Types
 
@@ -94,5 +94,5 @@ fields. `message_end` contains the final authoritative message.
 ## Example
 
 ```bash
-trpi --mode json "List files" 2>/dev/null | jq -c 'select(.type == "message_end")'
+tr-cowork --mode json "List files" 2>/dev/null | jq -c 'select(.type == "message_end")'
 ```

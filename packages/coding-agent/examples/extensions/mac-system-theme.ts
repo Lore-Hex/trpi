@@ -1,8 +1,8 @@
 /**
- * Syncs TRPI's theme with macOS system appearance (dark/light mode).
+ * Syncs TR Confidential Cowork's theme with macOS system appearance (dark/light mode).
  *
  * Usage:
- *   trpi -e examples/extensions/mac-system-theme.ts
+ *   tr-cowork -e examples/extensions/mac-system-theme.ts
  */
 
 import { exec } from "node:child_process";

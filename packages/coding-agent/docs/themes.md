@@ -1,4 +1,4 @@
-> TRPI can create themes. Ask it to build one for your setup.
+> TR Confidential Cowork can create themes. Ask it to build one for your setup.
 
 # Themes
 
@@ -16,11 +16,11 @@ Themes are JSON files that define colors for the TUI.
 
 ## Locations
 
-TRPI loads themes from:
+TR Confidential Cowork loads themes from:
 
 - Built-in: `dark`, `light`
-- Global: `~/.trpi/agent/themes/*.json`
-- Project: `.trpi/themes/*.json` (only after the project is trusted)
+- Global: `~/.tr-confidential-cowork/agent/themes/*.json`
+- Project: `.tr-confidential-cowork/themes/*.json` (only after the project is trusted)
 - Packages: `themes/` directories or `pi.themes` entries in `package.json`
 - Settings: `themes` array with files or directories
 - CLI: `--theme <path>` (repeatable)
@@ -37,20 +37,20 @@ Select a theme via `/settings` or in `settings.json`:
 }
 ```
 
-On first run, TRPI detects your terminal background and defaults to `dark` or `light`.
+On first run, TR Confidential Cowork detects your terminal background and defaults to `dark` or `light`.
 
 ### Initial Theme
 
 Start an interactive run with a theme without changing the saved setting:
 
 ```bash
-trpi --use-theme light
+tr-cowork --use-theme light
 ```
 
 To follow terminal appearance, use `lightTheme/darkTheme` syntax:
 
 ```bash
-trpi --use-theme light/dark
+tr-cowork --use-theme light/dark
 ```
 
 The CLI value is the initial theme for that run. Choosing another theme later in `/settings` applies it immediately
@@ -61,8 +61,8 @@ and saves it normally.
 1. Create a theme file:
 
 ```bash
-mkdir -p ~/.trpi/agent/themes
-vim ~/.trpi/agent/themes/my-theme.json
+mkdir -p ~/.tr-confidential-cowork/agent/themes
+vim ~/.tr-confidential-cowork/agent/themes/my-theme.json
 ```
 
 2. Define the theme with all required colors (see [Color Tokens](#color-tokens)):
@@ -137,7 +137,7 @@ vim ~/.trpi/agent/themes/my-theme.json
 
 3. Select the theme via `/settings`.
 
-**Hot reload:** When you edit the currently active custom theme file, TRPI reloads it automatically for immediate visual feedback.
+**Hot reload:** When you edit the currently active custom theme file, TR Confidential Cowork reloads it automatically for immediate visual feedback.
 
 ## Theme Format
 
@@ -293,7 +293,7 @@ Four formats are supported:
 
 ### Terminal Compatibility
 
-TRPI uses 24-bit RGB colors. Most modern terminals support this (iTerm2, Kitty, WezTerm, Windows Terminal, VS Code). For older terminals with only 256-color support, TRPI falls back to the nearest approximation.
+TR Confidential Cowork uses 24-bit RGB colors. Most modern terminals support this (iTerm2, Kitty, WezTerm, Windows Terminal, VS Code). For older terminals with only 256-color support, TR Confidential Cowork falls back to the nearest approximation.
 
 Check truecolor support:
 

@@ -47,11 +47,12 @@ describe("normalizeChangelogLinks", () => {
 		);
 	});
 
-	test("pins absolute TRPI source links without rerouting them upstream", () => {
-		const markdown = "[TRPI README](https://github.com/Lore-Hex/trpi/blob/main/README.md#quick-start)";
+	test("pins absolute TR Confidential Cowork source links without rerouting them upstream", () => {
+		const markdown =
+			"[TR Confidential Cowork README](https://github.com/Lore-Hex/trpi/blob/main/README.md#quick-start)";
 
 		expect(normalizeChangelogLinks(markdown, "0.79.0")).toBe(
-			"[TRPI README](https://github.com/Lore-Hex/trpi/blob/v0.79.0/README.md#quick-start)",
+			"[TR Confidential Cowork README](https://github.com/Lore-Hex/trpi/blob/v0.79.0/README.md#quick-start)",
 		);
 	});
 });

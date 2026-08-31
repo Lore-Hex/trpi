@@ -12,7 +12,7 @@ import {
 	getAgentDir,
 	SessionManager,
 	type Skill,
-} from "trpi-coding-agent";
+} from "tr-confidential-cowork";
 
 // Or define custom skills inline
 const customSkill: Skill = {
@@ -37,7 +37,7 @@ const loader = new DefaultResourceLoader({
 });
 await loader.reload();
 
-// Discover all skills from cwd/.trpi/skills, ~/.trpi/agent/skills, etc.
+// Discover all skills from cwd/.tr-confidential-cowork/skills, ~/.tr-confidential-cowork/agent/skills, etc.
 const { skills: allSkills, diagnostics } = loader.getSkills();
 console.log(
 	"Discovered skills:",

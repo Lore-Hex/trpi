@@ -2,10 +2,10 @@
  * Working Indicator Extension
  *
  * Demonstrates `ctx.ui.setWorkingIndicator()` for customizing the inline
- * working indicator shown while TRPI is streaming a response.
+ * working indicator shown while TR Confidential Cowork is streaming a response.
  *
  * Usage:
- *   trpi --extension examples/extensions/working-indicator.ts
+ *   tr-cowork --extension examples/extensions/working-indicator.ts
  *
  * Commands:
  *   /working-indicator           Show current mode
@@ -13,7 +13,7 @@
  *   /working-indicator pulse     Use a custom animated indicator
  *   /working-indicator none      Hide the indicator entirely
  *   /working-indicator spinner   Restore an animated spinner
- *   /working-indicator reset     Restore TRPI's default spinner
+ *   /working-indicator reset     Restore TR Confidential Cowork's default spinner
  */
 
 import type { ExtensionAPI, ExtensionContext, WorkingIndicatorOptions } from "@earendil-works/pi-coding-agent";
@@ -79,7 +79,7 @@ function describeMode(mode: WorkingIndicatorMode): string {
 		case "spinner":
 			return "custom spinner";
 		case "default":
-			return "TRPI default spinner";
+			return "TR Confidential Cowork default spinner";
 	}
 }
 

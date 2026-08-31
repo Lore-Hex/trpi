@@ -5,8 +5,8 @@
  * When --ssh is provided, read/write/edit/bash run on the remote.
  *
  * Usage:
- *   trpi -e ./ssh.ts --ssh user@host
- *   trpi -e ./ssh.ts --ssh user@host:/remote/path
+ *   tr-cowork -e ./ssh.ts --ssh user@host
+ *   tr-cowork -e ./ssh.ts --ssh user@host:/remote/path
  *
  * Requirements:
  *   - SSH key-based auth (no password prompts)

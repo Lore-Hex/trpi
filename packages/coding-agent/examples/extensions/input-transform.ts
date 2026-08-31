@@ -1,10 +1,10 @@
 /**
  * Input Transform Example - demonstrates the `input` event for intercepting user input.
  *
- * Start TRPI with this extension:
- *   trpi -e ./examples/extensions/input-transform.ts
+ * Start TR Confidential Cowork with this extension:
+ *   tr-cowork -e ./examples/extensions/input-transform.ts
  *
- * Then type these inside TRPI:
+ * Then type these inside TR Confidential Cowork:
  *   ?quick What is TypeScript?  → "Respond briefly: What is TypeScript?"
  *   ping                        → "pong" (instant, no LLM)
  *   time                        → current time (instant, no LLM)

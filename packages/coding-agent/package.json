@@ -6,6 +6,7 @@
 	"type": "module",
 	"piConfig": {
 		"name": "tr-cowork",
+		"displayName": "TR Confidential Cowork",
 		"configDir": ".tr-confidential-cowork"
 	},
 	"bin": {

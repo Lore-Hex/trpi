@@ -4,7 +4,7 @@
  * Adjusts command, cwd, and env before execution.
  *
  * Usage:
- *   trpi -e ./bash-spawn-hook.ts
+ *   tr-cowork -e ./bash-spawn-hook.ts
  */
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";

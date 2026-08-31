@@ -1,5 +1,5 @@
 {
-	"name": "trpi-monorepo",
+	"name": "tr-confidential-cowork-monorepo",
 	"private": true,
 	"type": "module",
 	"workspaces": [

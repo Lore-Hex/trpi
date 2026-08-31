@@ -1,6 +1,6 @@
 # Termux (Android) Setup
 
-TRPI runs on Android via [Termux](https://termux.dev/), a terminal emulator and Linux environment for Android.
+TR Confidential Cowork runs on Android via [Termux](https://termux.dev/), a terminal emulator and Linux environment for Android.
 
 ## Prerequisites
 
@@ -16,21 +16,21 @@ pkg update && pkg upgrade
 # Install dependencies
 pkg install nodejs termux-api git
 
-# Build TRPI from the public source repository
+# Build TR Confidential Cowork from the public source repository
 git clone https://github.com/Lore-Hex/trpi.git
-cd trpi
+cd tr-cowork
 npm ci --ignore-scripts
 npm run hydrate:model-data
 npm run build:offline
 
 # Put the built CLI on Termux's PATH
-ln -sf "$PWD/packages/coding-agent/dist/cli.js" "$PREFIX/bin/trpi"
+ln -sf "$PWD/packages/coding-agent/dist/cli.js" "$PREFIX/bin/tr-cowork"
 
 # Create config directory
-mkdir -p ~/.trpi/agent
+mkdir -p ~/.tr-confidential-cowork/agent
 
-# Run TRPI
-trpi
+# Run TR Confidential Cowork
+tr-cowork
 ```
 
 ## Clipboard Support
@@ -41,7 +41,7 @@ Image clipboard is not supported on Termux (the `ctrl+v` image paste feature wil
 
 ## Example AGENTS.md for Termux
 
-Create `~/.trpi/agent/AGENTS.md` to help the agent understand the Termux environment:
+Create `~/.tr-confidential-cowork/agent/AGENTS.md` to help the agent understand the Termux environment:
 
 ````markdown
 # Agent Environment: Termux on Android

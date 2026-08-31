@@ -1,7 +1,7 @@
 /**
  * Subagent Tool - Delegate tasks to specialized agents
  *
- * Spawns a separate `trpi` process for each subagent invocation,
+ * Spawns a separate `tr-cowork` process for each subagent invocation,
  * giving it an isolated context window.
  *
  * Supports three modes:
@@ -259,7 +259,7 @@ function getTrpiInvocation(args: string[]): { command: string; args: string[] } 
 		return { command: process.execPath, args };
 	}
 
-	return { command: "trpi", args };
+	return { command: "tr-cowork", args };
 }
 
 type OnUpdateCallback = (partial: AgentToolResult<SubagentDetails>) => void;

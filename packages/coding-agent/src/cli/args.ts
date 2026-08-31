@@ -4,7 +4,7 @@
 
 import type { ThinkingLevel } from "@earendil-works/pi-agent-core";
 import chalk from "chalk";
-import { APP_NAME, CONFIG_DIR_NAME, ENV_AGENT_DIR, ENV_SESSION_DIR } from "../config.ts";
+import { APP_NAME, APP_TITLE, CONFIG_DIR_NAME, ENV_AGENT_DIR, ENV_SESSION_DIR } from "../config.ts";
 import type { ExtensionFlag } from "../core/extensions/types.ts";
 import type { TuiMode } from "../core/settings-manager.ts";
 
@@ -259,7 +259,7 @@ export function printHelp(extensionFlags?: ExtensionFlag[]): void {
 					})
 					.join("\n")}\n`
 			: "";
-	console.log(`${chalk.bold(APP_NAME)} - AI coding assistant with read, bash, edit, write tools
+	console.log(`${chalk.bold(APP_TITLE)} (${APP_NAME}) - AI coding assistant with read, bash, edit, write tools
 
 ${chalk.bold("Usage:")}
   ${APP_NAME} [options] [--] [@files...] [messages...]
@@ -315,8 +315,8 @@ ${chalk.bold("Options:")}
   --tui-mode <mode>              TUI mode: regular (default) or fullscreen
   --approve, -a                  Trust project-local files for this run
   --no-approve, -na              Ignore project-local files for this run
-	--offline                      Disable startup network operations (same as TR_COWORK_OFFLINE=1)
-	--                             End option parsing; treat remaining arguments as messages/files
+  --offline                      Disable startup network operations (same as TR_COWORK_OFFLINE=1)
+  --                             End option parsing; treat remaining arguments as messages/files
   --help, -h                     Show this help
   --version, -v                  Show version number
 
@@ -431,15 +431,15 @@ ${chalk.bold("Environment Variables:")}
   AWS_REGION                       - AWS region for Amazon Bedrock (e.g., us-east-1)
   ${ENV_AGENT_DIR.padEnd(32)} - Config directory (default: ~/${CONFIG_DIR_NAME}/agent)
   ${ENV_SESSION_DIR.padEnd(32)} - Session storage directory (overridden by --session-dir)
-  TRPI_PACKAGE_DIR                 - Override package directory (for Nix/Guix store paths)
-  PI_PACKAGE_DIR                   - Legacy alias for TRPI_PACKAGE_DIR
-  TRPI_OFFLINE                     - Disable startup network operations when set to 1/true/yes
-  PI_OFFLINE                       - Legacy alias for TRPI_OFFLINE
-  TRPI_SKIP_VERSION_CHECK          - Disable the startup version check when set to 1
-  PI_SKIP_VERSION_CHECK            - Legacy alias for TRPI_SKIP_VERSION_CHECK
+  TR_COWORK_PACKAGE_DIR                 - Override package directory (for Nix/Guix store paths)
+  PI_PACKAGE_DIR                   - Legacy alias for TR_COWORK_PACKAGE_DIR
+  TR_COWORK_OFFLINE                     - Disable startup network operations when set to 1/true/yes
+  PI_OFFLINE                       - Legacy alias for TR_COWORK_OFFLINE
+  TR_COWORK_SKIP_VERSION_CHECK          - Disable the startup version check when set to 1
+  PI_SKIP_VERSION_CHECK            - Legacy alias for TR_COWORK_SKIP_VERSION_CHECK
   PI_TELEMETRY                     - Control optional provider attribution headers
-  TRPI_SHARE_VIEWER_URL            - Optional custom base URL for /share (default: direct GitHub gist)
-  PI_SHARE_VIEWER_URL              - Legacy alias for TRPI_SHARE_VIEWER_URL
+  TR_COWORK_SHARE_VIEWER_URL            - Optional custom base URL for /share (default: direct GitHub gist)
+  PI_SHARE_VIEWER_URL              - Legacy alias for TR_COWORK_SHARE_VIEWER_URL
 
 ${chalk.bold("Built-in Tool Names:")}
   read       - Read file contents

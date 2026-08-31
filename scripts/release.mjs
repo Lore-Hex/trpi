@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Release script for TRPI
+ * Release script for TR Confidential Cowork
  *
  * Usage:
  *   node scripts/release.mjs <major|minor|patch>

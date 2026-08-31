@@ -5,7 +5,7 @@
  * change agent behavior based on extension state.
  *
  * Usage:
- * 1. Copy this file to ~/.trpi/agent/extensions/ or your project's .trpi/extensions/
+ * 1. Copy this file to ~/.tr-confidential-cowork/agent/extensions/ or your project's .tr-confidential-cowork/extensions/
  * 2. Use /pirate to toggle pirate mode
  * 3. When enabled, the agent will respond like a pirate
  */

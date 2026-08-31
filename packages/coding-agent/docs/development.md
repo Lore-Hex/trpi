@@ -6,7 +6,7 @@ See [AGENTS.md](https://github.com/Lore-Hex/trpi/blob/main/AGENTS.md) for additi
 
 ```bash
 git clone https://github.com/Lore-Hex/trpi.git
-cd trpi
+cd tr-cowork
 npm ci --ignore-scripts
 npm run hydrate:model-data
 npm run build:offline
@@ -15,10 +15,10 @@ npm run build:offline
 Run from source:
 
 ```bash
-/path/to/trpi/pi-test.sh
+/path/to/tr-cowork/pi-test.sh
 ```
 
-The script can be run from any directory. TRPI keeps the caller's current working directory.
+The script can be run from any directory. TR Confidential Cowork keeps the caller's current working directory.
 
 ## Further Forking / Rebranding
 
@@ -27,8 +27,8 @@ Configure via `package.json`:
 ```json
 {
   "piConfig": {
-    "name": "trpi",
-    "configDir": ".trpi"
+    "name": "tr-cowork",
+    "configDir": ".tr-confidential-cowork"
   }
 }
 ```
@@ -49,7 +49,7 @@ Never use `__dirname` directly for package assets.
 
 ## Debug Command
 
-`/debug` (hidden) writes to `~/.trpi/agent/trpi-debug.log`:
+`/debug` (hidden) writes to `~/.tr-confidential-cowork/agent/tr-cowork-debug.log`:
 - Rendered TUI lines with ANSI codes
 - Last messages sent to the LLM
 

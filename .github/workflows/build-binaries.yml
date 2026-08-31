@@ -125,7 +125,7 @@ jobs:
           ./scripts/create-source-archive.sh \
             --version "${VERSION}" \
             --ref HEAD \
-            --out "release-assets/trpi-${VERSION}-source.tar.gz"
+            --out "release-assets/tr-cowork-${VERSION}-source.tar.gz"
 
       - name: Build binaries from source archive
         run: |
@@ -134,8 +134,8 @@ jobs:
           VERSION="${RELEASE_TAG#v}"
           build_root="$(mktemp -d)"
           trap 'rm -rf "${build_root}"' EXIT
-          tar -xzf "release-assets/trpi-${VERSION}-source.tar.gz" -C "${build_root}"
-          "${build_root}/trpi-${VERSION}/scripts/build-binaries.sh" \
+          tar -xzf "release-assets/tr-cowork-${VERSION}-source.tar.gz" -C "${build_root}"
+          "${build_root}/tr-cowork-${VERSION}/scripts/build-binaries.sh" \
             --offline-model-data \
             --out "${GITHUB_WORKSPACE}/packages/coding-agent/binaries"
 
@@ -152,12 +152,12 @@ jobs:
           cd packages/coding-agent/binaries
 
           binary_assets=(
-            trpi-darwin-arm64.tar.gz
-            trpi-darwin-x64.tar.gz
-            trpi-linux-x64.tar.gz
-            trpi-linux-arm64.tar.gz
-            trpi-windows-x64.zip
-            trpi-windows-arm64.zip
+            tr-cowork-darwin-arm64.tar.gz
+            tr-cowork-darwin-x64.tar.gz
+            tr-cowork-linux-x64.tar.gz
+            tr-cowork-linux-arm64.tar.gz
+            tr-cowork-windows-x64.zip
+            tr-cowork-windows-arm64.zip
           )
 
           for asset in "${binary_assets[@]}"; do
@@ -167,15 +167,15 @@ jobs:
           cp "${binary_assets[@]}" "${GITHUB_WORKSPACE}/release-assets/"
 
           cd "${GITHUB_WORKSPACE}/release-assets"
-          source_asset="trpi-${VERSION}-source.tar.gz"
+          source_asset="tr-cowork-${VERSION}-source.tar.gz"
           release_assets=(
             "${source_asset}"
-            trpi-darwin-arm64.tar.gz
-            trpi-darwin-x64.tar.gz
-            trpi-linux-x64.tar.gz
-            trpi-linux-arm64.tar.gz
-            trpi-windows-x64.zip
-            trpi-windows-arm64.zip
+            tr-cowork-darwin-arm64.tar.gz
+            tr-cowork-darwin-x64.tar.gz
+            tr-cowork-linux-x64.tar.gz
+            tr-cowork-linux-arm64.tar.gz
+            tr-cowork-windows-x64.zip
+            tr-cowork-windows-arm64.zip
           )
           sha256sum "${release_assets[@]}" > SHA256SUMS
 
@@ -218,21 +218,21 @@ jobs:
           case "${runtime_platform}" in
             darwin-arm64|darwin-x64|linux-arm64|linux-x64)
               platform="${runtime_platform}"
-              archive="release-assets/pi-${platform}.tar.gz"
-              root="extracted/pi"
-              binary="${root}/pi"
+              archive="release-assets/tr-cowork-${platform}.tar.gz"
+              root="extracted/tr-cowork"
+              binary="${root}/tr-cowork"
               ;;
             win32-arm64)
               platform="windows-arm64"
-              archive="release-assets/pi-${platform}.zip"
+              archive="release-assets/tr-cowork-${platform}.zip"
               root="extracted"
-              binary="${root}/pi.exe"
+              binary="${root}/tr-cowork.exe"
               ;;
             win32-x64)
               platform="windows-x64"
-              archive="release-assets/pi-${platform}.zip"
+              archive="release-assets/tr-cowork-${platform}.zip"
               root="extracted"
-              binary="${root}/pi.exe"
+              binary="${root}/tr-cowork.exe"
               ;;
             *)
               echo "::error::Unsupported runner platform ${runtime_platform}"
@@ -283,15 +283,15 @@ jobs:
           cd release-assets
 
           VERSION="${RELEASE_TAG#v}"
-          source_asset="trpi-${VERSION}-source.tar.gz"
+          source_asset="tr-cowork-${VERSION}-source.tar.gz"
           expected_assets=(
             "${source_asset}"
-            trpi-darwin-arm64.tar.gz
-            trpi-darwin-x64.tar.gz
-            trpi-linux-x64.tar.gz
-            trpi-linux-arm64.tar.gz
-            trpi-windows-x64.zip
-            trpi-windows-arm64.zip
+            tr-cowork-darwin-arm64.tar.gz
+            tr-cowork-darwin-x64.tar.gz
+            tr-cowork-linux-x64.tar.gz
+            tr-cowork-linux-arm64.tar.gz
+            tr-cowork-windows-x64.zip
+            tr-cowork-windows-arm64.zip
             SHA256SUMS
             RELEASE_NOTES.md
           )
@@ -303,18 +303,18 @@ jobs:
           sha256sum -c SHA256SUMS
 
           unix_binary_assets=(
-            trpi-darwin-arm64.tar.gz
-            trpi-darwin-x64.tar.gz
-            trpi-linux-x64.tar.gz
-            trpi-linux-arm64.tar.gz
+            tr-cowork-darwin-arm64.tar.gz
+            tr-cowork-darwin-x64.tar.gz
+            tr-cowork-linux-x64.tar.gz
+            tr-cowork-linux-arm64.tar.gz
           )
           windows_binary_assets=(
-            trpi-windows-x64.zip
-            trpi-windows-arm64.zip
+            tr-cowork-windows-x64.zip
+            tr-cowork-windows-arm64.zip
           )
 
           for asset in "${unix_binary_assets[@]}"; do
-            tar -tzf "${asset}" trpi/LICENSE > /dev/null
+            tar -tzf "${asset}" tr-cowork/LICENSE > /dev/null
           done
           for asset in "${windows_binary_assets[@]}"; do
             unzip -tqq "${asset}" LICENSE > /dev/null
@@ -329,15 +329,15 @@ jobs:
           cd release-assets
 
           VERSION="${RELEASE_TAG#v}"
-          source_asset="trpi-${VERSION}-source.tar.gz"
+          source_asset="tr-cowork-${VERSION}-source.tar.gz"
           release_assets=(
             "${source_asset}"
-            trpi-darwin-arm64.tar.gz
-            trpi-darwin-x64.tar.gz
-            trpi-linux-x64.tar.gz
-            trpi-linux-arm64.tar.gz
-            trpi-windows-x64.zip
-            trpi-windows-arm64.zip
+            tr-cowork-darwin-arm64.tar.gz
+            tr-cowork-darwin-x64.tar.gz
+            tr-cowork-linux-x64.tar.gz
+            tr-cowork-linux-arm64.tar.gz
+            tr-cowork-windows-x64.zip
+            tr-cowork-windows-arm64.zip
             SHA256SUMS
           )
 

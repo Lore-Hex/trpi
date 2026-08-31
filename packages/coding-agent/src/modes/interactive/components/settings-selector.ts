@@ -530,7 +530,7 @@ export class SettingsSelectorComponent extends Container {
 			{
 				id: "provider-attribution",
 				label: "Provider attribution",
-				description: "Send optional TRPI attribution headers to providers that support them",
+				description: "Send optional TR Confidential Cowork attribution headers to providers that support them",
 				currentValue: config.enableInstallTelemetry ? "true" : "false",
 				values: ["true", "false"],
 			},

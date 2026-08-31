@@ -67,10 +67,12 @@ describe("buildSystemPrompt", () => {
 				cwd: process.cwd(),
 			});
 
-			expect(prompt).toContain("inside TRPI, a TrustedRouter-first fork of the Pi coding agent harness");
-			expect(prompt).toContain("TRPI documentation");
 			expect(prompt).toContain(
-				"- When reading TRPI docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory",
+				"inside TR Confidential Cowork, a TrustedRouter-first fork of the Pi coding agent harness",
+			);
+			expect(prompt).toContain("TR Confidential Cowork documentation");
+			expect(prompt).toContain(
+				"- When reading TR Confidential Cowork docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory",
 			);
 			expect(prompt).toContain("environment variables (docs/environment-variables.md)");
 			expect(prompt).not.toContain("operating inside pi");

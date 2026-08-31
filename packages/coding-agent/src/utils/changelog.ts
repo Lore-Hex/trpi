@@ -8,7 +8,7 @@ export interface ChangelogEntry {
 	content: string;
 }
 
-const TRPI_GITHUB_REPO = "Lore-Hex/trpi";
+const TR_COWORK_GITHUB_REPO = "Lore-Hex/trpi";
 const UPSTREAM_GITHUB_REPO = "earendil-works/pi";
 const CHANGELOG_LINK_BASE_PATH = "packages/coding-agent";
 const LEGACY_REPO_RE = /^https:\/\/github\.com\/(?:badlogic|earendil-works)\/pi-mono(?=\/|$)/;
@@ -70,7 +70,7 @@ function isDirectoryTarget(originalPath: string, repositoryPath: string): boolea
 function normalizeChangelogLinkTarget(target: string, tag: string): string {
 	let canonicalTarget = target.replace(LEGACY_REPO_RE, `https://github.com/${UPSTREAM_GITHUB_REPO}`);
 
-	for (const repo of [TRPI_GITHUB_REPO, UPSTREAM_GITHUB_REPO]) {
+	for (const repo of [TR_COWORK_GITHUB_REPO, UPSTREAM_GITHUB_REPO]) {
 		const repoUrl = `https://github.com/${repo}`;
 		for (const route of ["blob", "tree"]) {
 			for (const branch of ["main", "master"]) {
@@ -97,7 +97,7 @@ function normalizeChangelogLinkTarget(target: string, tag: string): string {
 	}
 
 	const route = isDirectoryTarget(pathPart, repositoryPath) ? "tree" : "blob";
-	return `https://github.com/${TRPI_GITHUB_REPO}/${route}/${tag}/${encodeURI(repositoryPath)}${query}${fragment}`;
+	return `https://github.com/${TR_COWORK_GITHUB_REPO}/${route}/${tag}/${encodeURI(repositoryPath)}${query}${fragment}`;
 }
 
 export function normalizeChangelogLinks(markdown: string, version: string | ChangelogEntry): string {

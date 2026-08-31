@@ -563,12 +563,12 @@ export async function main(args: string[], options?: MainOptions) {
 	const extensionFactories = [...builtInExtensions, ...(options?.extensionFactories ?? [])];
 	const offlineMode =
 		args.includes("--offline") ||
-		isTruthyEnvFlag(process.env.TRPI_OFFLINE) ||
+		isTruthyEnvFlag(process.env.TR_COWORK_OFFLINE) ||
 		isTruthyEnvFlag(process.env.PI_OFFLINE);
 	if (offlineMode) {
-		process.env.TRPI_OFFLINE = "1";
+		process.env.TR_COWORK_OFFLINE = "1";
 		process.env.PI_OFFLINE = "1";
-		process.env.TRPI_SKIP_VERSION_CHECK = "1";
+		process.env.TR_COWORK_SKIP_VERSION_CHECK = "1";
 		process.env.PI_SKIP_VERSION_CHECK = "1";
 	}
 
@@ -940,9 +940,9 @@ export async function main(args: string[], options?: MainOptions) {
 	}
 
 	const startupBenchmark =
-		isTruthyEnvFlag(process.env.TRPI_STARTUP_BENCHMARK) || isTruthyEnvFlag(process.env.PI_STARTUP_BENCHMARK);
+		isTruthyEnvFlag(process.env.TR_COWORK_STARTUP_BENCHMARK) || isTruthyEnvFlag(process.env.PI_STARTUP_BENCHMARK);
 	if (startupBenchmark && appMode !== "interactive") {
-		console.error(chalk.red("Error: TRPI_STARTUP_BENCHMARK only supports interactive mode"));
+		console.error(chalk.red("Error: TR_COWORK_STARTUP_BENCHMARK only supports interactive mode"));
 		process.exit(1);
 	}
 

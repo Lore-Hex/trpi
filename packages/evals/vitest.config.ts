@@ -14,7 +14,7 @@ export default mergeConfig(
 			reporters: ["vitest-evals/reporter", "./src/vitest-evals/reporter.ts"],
 		},
 		resolve: {
-			alias: [{ find: /^trpi-coding-agent$/, replacement: workspaceSourcePaths.codingAgentIndex }],
+			alias: [{ find: /^tr-confidential-cowork$/, replacement: workspaceSourcePaths.codingAgentIndex }],
 		},
 	}),
 );

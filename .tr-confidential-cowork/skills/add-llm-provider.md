@@ -45,7 +45,7 @@ If the provider requires a new wire protocol rather than an existing API impleme
 - Add a default model in `packages/coding-agent/src/core/model-resolver.ts`.
 - Ensure provider display/auth readiness is correct in the model runtime and login UI.
 - Document environment variables in `packages/coding-agent/src/cli/args.ts`.
-- Add setup and model-selection guidance to the active TRPI README/provider docs.
+- Add setup and model-selection guidance to the active TR Confidential Cowork README/provider docs.
 - Preserve inherited `@earendil-works/pi-*` public imports and `pi` extension callback names unless an API-breaking migration is explicitly intended.
 
 ## 6. Verification

@@ -82,7 +82,8 @@ These variables are read by Pi itself:
 | `PI_CODING_AGENT_SESSION_DIR` | Override session storage; overridden by `--session-dir` |
 | `PI_PACKAGE_DIR` | Override the package directory, useful for Nix/Guix store paths |
 | `PI_OFFLINE` | Disable startup network operations, including update checks, package updates, and install/update telemetry |
-| `PI_SKIP_VERSION_CHECK` | Disable the `pi.dev` latest-version request |
+| `TR_COWORK_SKIP_VERSION_CHECK` | Disable the GitHub release version check |
+| `PI_SKIP_VERSION_CHECK` | Compatibility alias for `TR_COWORK_SKIP_VERSION_CHECK` |
 | `PI_TELEMETRY` | Override install/update telemetry and provider attribution headers: `1`/`true`/`yes` or `0`/`false`/`no` |
 | `PI_CACHE_RETENTION` | Set to `long` for extended provider prompt caching where supported |
 | `PI_SHARE_VIEWER_URL` | Override the base URL used by `/share` |

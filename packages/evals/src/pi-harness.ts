@@ -12,7 +12,7 @@ import {
 	ModelRuntime,
 	SessionManager,
 	SettingsManager,
-} from "trpi-coding-agent";
+} from "tr-confidential-cowork";
 import {
 	createHarness,
 	type Harness,

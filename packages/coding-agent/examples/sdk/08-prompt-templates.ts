@@ -11,7 +11,7 @@ import {
 	getAgentDir,
 	type PromptTemplate,
 	SessionManager,
-} from "trpi-coding-agent";
+} from "tr-confidential-cowork";
 
 // Define custom templates
 const deployTemplate: PromptTemplate = {
@@ -36,7 +36,7 @@ const loader = new DefaultResourceLoader({
 });
 await loader.reload();
 
-// Discover templates from cwd/.trpi/prompts/ and ~/.trpi/agent/prompts/
+// Discover templates from cwd/.tr-confidential-cowork/prompts/ and ~/.tr-confidential-cowork/agent/prompts/
 const discovered = loader.getPrompts().prompts;
 console.log("Discovered prompt templates:");
 for (const template of discovered) {

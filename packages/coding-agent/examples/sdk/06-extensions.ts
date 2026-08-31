@@ -5,15 +5,15 @@
  * They provide a unified system for extensions, custom tools, commands, and more.
  *
  * By default, extension files are discovered from:
- * - ~/.trpi/agent/extensions/
- * - <cwd>/.trpi/extensions/
+ * - ~/.tr-confidential-cowork/agent/extensions/
+ * - <cwd>/.tr-confidential-cowork/extensions/
  * - Paths specified in settings.json "extensions" array
  *
  * An extension is a TypeScript file that exports a default function:
  *   export default function (pi: ExtensionAPI) { ... }
  */
 
-import { createAgentSession, DefaultResourceLoader, getAgentDir, SessionManager } from "trpi-coding-agent";
+import { createAgentSession, DefaultResourceLoader, getAgentDir, SessionManager } from "tr-confidential-cowork";
 
 // Extensions are discovered automatically from standard locations.
 // You can also add paths via settings.json or DefaultResourceLoader options.
@@ -52,7 +52,7 @@ try {
 
 // Example extension file (./my-logging-extension.ts):
 /*
-import type { ExtensionAPI } from "trpi-coding-agent";
+import type { ExtensionAPI } from "tr-confidential-cowork";
 
 export default function (pi: ExtensionAPI) {
 	pi.on("agent_start", async () => {

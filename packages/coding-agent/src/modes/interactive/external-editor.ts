@@ -12,12 +12,14 @@ export interface ExternalEditorOptions {
 export type ExternalEditorResult = { status: "complete"; content: string } | { status: "failed" };
 
 export async function editInExternalEditor(options: ExternalEditorOptions): Promise<ExternalEditorResult> {
-	const directory = mkdtempSync(join(tmpdir(), "trpi-editor-"));
+	const directory = mkdtempSync(join(tmpdir(), "tr-cowork-editor-"));
 	const filePath = join(directory, "prompt.md");
 	try {
 		writeFileSync(filePath, options.content, "utf-8");
-		process.stdout.write(`Launching external editor: ${options.command}\nTRPI will resume when the editor exits.\n`);
-		const fileVariable = "TRPI_EXTERNAL_EDITOR_FILE";
+		process.stdout.write(
+			`Launching external editor: ${options.command}\nTR Confidential Cowork will resume when the editor exits.\n`,
+		);
+		const fileVariable = "TR_COWORK_EXTERNAL_EDITOR_FILE";
 		const fileArgument = process.platform === "win32" ? `"%${fileVariable}%"` : `"$${fileVariable}"`;
 
 		// Do not use spawnSync here. On Windows, synchronous child_process calls can keep

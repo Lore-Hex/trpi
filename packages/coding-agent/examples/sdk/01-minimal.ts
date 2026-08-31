@@ -2,10 +2,10 @@
  * Minimal SDK Usage
  *
  * Uses all defaults: discovers skills, extensions, tools, context files
- * from cwd and ~/.trpi/agent. Model chosen from settings or first available.
+ * from cwd and ~/.tr-confidential-cowork/agent. Model chosen from settings or first available.
  */
 
-import { createAgentSession } from "trpi-coding-agent";
+import { createAgentSession } from "tr-confidential-cowork";
 
 const { session } = await createAgentSession();
 

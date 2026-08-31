@@ -4,7 +4,7 @@
  * Demonstrates the `model_select` hook which fires when the model changes
  * via /model command, Ctrl+P cycling, or session restore.
  *
- * Usage: trpi -e ./model-status.ts
+ * Usage: tr-cowork -e ./model-status.ts
  */
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";

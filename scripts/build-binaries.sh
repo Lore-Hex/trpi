@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Build TRPI binaries for all platforms locally.
+# Build TR Confidential Cowork binaries for all platforms locally.
 # Mirrors .github/workflows/build-binaries.yml
 #
 # Usage:
@@ -16,12 +16,12 @@
 #
 # Output:
 #   packages/coding-agent/binaries/
-#     trpi-darwin-arm64.tar.gz
-#     trpi-darwin-x64.tar.gz
-#     trpi-linux-x64.tar.gz
-#     trpi-linux-arm64.tar.gz
-#     trpi-windows-x64.zip
-#     trpi-windows-arm64.zip
+#     tr-cowork-darwin-arm64.tar.gz
+#     tr-cowork-darwin-x64.tar.gz
+#     tr-cowork-linux-x64.tar.gz
+#     tr-cowork-linux-arm64.tar.gz
+#     tr-cowork-windows-x64.zip
+#     tr-cowork-windows-arm64.zip
 
 set -euo pipefail
 
@@ -200,11 +200,11 @@ for platform in "${PLATFORMS[@]}"; do
     # worker must be present in the compiled executable.
     #
     # Disable cwd bunfig.toml autoload so project preload scripts cannot crash the
-    # standalone binary before TRPI starts (see upstream #7684).
+    # standalone binary before TR Confidential Cowork starts (see upstream #7684).
 	if [[ "$platform" == windows-* ]]; then
-		bun build --compile --no-compile-autoload-bunfig --target="$bun_target" ./dist/bun/cli.js ./src/utils/image-resize-worker.ts --outfile "$OUTPUT_DIR/$platform/trpi.exe"
+		bun build --compile --no-compile-autoload-bunfig --target="$bun_target" ./dist/bun/cli.js ./src/utils/image-resize-worker.ts --outfile "$OUTPUT_DIR/$platform/tr-cowork.exe"
 	else
-		bun build --compile --no-compile-autoload-bunfig --target="$bun_target" ./dist/bun/cli.js ./src/utils/image-resize-worker.ts --outfile "$OUTPUT_DIR/$platform/trpi"
+		bun build --compile --no-compile-autoload-bunfig --target="$bun_target" ./dist/bun/cli.js ./src/utils/image-resize-worker.ts --outfile "$OUTPUT_DIR/$platform/tr-cowork"
     fi
 done
 
@@ -253,12 +253,12 @@ cd "$OUTPUT_DIR"
 for platform in "${PLATFORMS[@]}"; do
     if [[ "$platform" == windows-* ]]; then
         # Windows (zip)
-		echo "Creating trpi-$platform.zip..."
-		(cd "$platform" && zip -r ../trpi-$platform.zip .)
+		echo "Creating tr-cowork-$platform.zip..."
+		(cd "$platform" && zip -r ../tr-cowork-$platform.zip .)
 	else
 		# Unix platforms (tar.gz) - use wrapper directory for mise compatibility
-		echo "Creating trpi-$platform.tar.gz..."
-		mv "$platform" trpi && tar -czf trpi-$platform.tar.gz trpi && mv trpi "$platform"
+		echo "Creating tr-cowork-$platform.tar.gz..."
+		mv "$platform" tr-cowork && tar -czf tr-cowork-$platform.tar.gz tr-cowork && mv tr-cowork "$platform"
     fi
 done
 
@@ -267,9 +267,9 @@ echo "==> Extracting archives for testing..."
 for platform in "${PLATFORMS[@]}"; do
     rm -rf "$platform"
 	if [[ "$platform" == windows-* ]]; then
-		mkdir -p "$platform" && (cd "$platform" && unzip -q ../trpi-$platform.zip)
+		mkdir -p "$platform" && (cd "$platform" && unzip -q ../tr-cowork-$platform.zip)
 	else
-		tar -xzf trpi-$platform.tar.gz && mv trpi "$platform"
+		tar -xzf tr-cowork-$platform.tar.gz && mv tr-cowork "$platform"
     fi
 done
 
@@ -281,8 +281,8 @@ echo ""
 echo "Extracted directories for testing:"
 for platform in "${PLATFORMS[@]}"; do
 	if [[ "$platform" == windows-* ]]; then
-		echo "  $OUTPUT_DIR/$platform/trpi.exe"
+		echo "  $OUTPUT_DIR/$platform/tr-cowork.exe"
 	else
-		echo "  $OUTPUT_DIR/$platform/trpi"
+		echo "  $OUTPUT_DIR/$platform/tr-cowork"
     fi
 done

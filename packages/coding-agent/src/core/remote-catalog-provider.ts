@@ -44,7 +44,7 @@ function remoteModels(
 /** Add a persisted, optionally configured catalog overlay to a static built-in provider. */
 export function withRemoteCatalog(
 	provider: Provider,
-	catalogBaseUrl: string | undefined = process.env.TRPI_MODEL_CATALOG_BASE_URL,
+	catalogBaseUrl: string | undefined = process.env.TR_COWORK_MODEL_CATALOG_BASE_URL,
 	localGeneratedAt?: number,
 ): Provider {
 	let dynamicModels: readonly Model<Api>[] = [];

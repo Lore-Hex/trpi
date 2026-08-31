@@ -10,10 +10,10 @@
  * via `tool_call` input mutation without replacing the tool.
  *
  * Config files (merged, project takes precedence):
- * - ~/.trpi/agent/extensions/sandbox.json (global)
- * - <cwd>/.trpi/sandbox.json (project-local)
+ * - ~/.tr-confidential-cowork/agent/extensions/sandbox.json (global)
+ * - <cwd>/.tr-confidential-cowork/sandbox.json (project-local)
  *
- * Example .trpi/sandbox.json:
+ * Example .tr-confidential-cowork/sandbox.json:
  * ```json
  * {
  *   "enabled": true,
@@ -30,13 +30,13 @@
  * ```
  *
  * Usage:
- * - `trpi -e ./sandbox` - sandbox enabled with default/config settings
- * - `trpi -e ./sandbox --no-sandbox` - disable sandboxing
+ * - `tr-cowork -e ./sandbox` - sandbox enabled with default/config settings
+ * - `tr-cowork -e ./sandbox --no-sandbox` - disable sandboxing
  * - `/sandbox` - show current sandbox configuration
  *
  * Setup:
- * 1. Copy sandbox/ directory to ~/.trpi/agent/extensions/
- * 2. Run `npm install` in ~/.trpi/agent/extensions/sandbox/
+ * 1. Copy sandbox/ directory to ~/.tr-confidential-cowork/agent/extensions/
+ * 2. Run `npm install` in ~/.tr-confidential-cowork/agent/extensions/sandbox/
  *
  * Linux also requires: bubblewrap, socat, ripgrep
  */

@@ -1,7 +1,7 @@
 /**
  * Minimal Kimi deferred-tool loading demo.
  *
- *   trpi -e ./kimi-deferred-tools.ts
+ *   tr-cowork -e ./kimi-deferred-tools.ts
  *    example prompt: Use the available tools to calculate 100 + 500. Do not calculate it yourself.
  */
 
