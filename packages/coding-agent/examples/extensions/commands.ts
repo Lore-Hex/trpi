@@ -5,7 +5,7 @@
  * that lists all available slash commands in the current session.
  *
  * Usage:
- * 1. Copy this file to ~/.trpi/agent/extensions/ or your project's .trpi/extensions/
+ * 1. Copy this file to ~/.tr-confidential-cowork/agent/extensions/ or your project's .tr-confidential-cowork/extensions/
  * 2. Use /commands to see available commands
  * 3. Use /commands extensions to filter by source
  */

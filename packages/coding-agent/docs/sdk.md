@@ -1,8 +1,8 @@
-> TRPI can help you use the SDK. Ask it to build an integration for your use case.
+> TR Confidential Cowork can help you use the SDK. Ask it to build an integration for your use case.
 
 # SDK
 
-The SDK provides programmatic access to TRPI's agent capabilities. Use it to embed TRPI in other applications, build custom interfaces, or integrate with automated workflows.
+The SDK provides programmatic access to TR Confidential Cowork's agent capabilities. Use it to embed TR Confidential Cowork in other applications, build custom interfaces, or integrate with automated workflows.
 
 **Example use cases:**
 - Build a custom UI (web, desktop, mobile)
@@ -16,7 +16,7 @@ See [examples/sdk/](../examples/sdk/) for working examples from minimal to full 
 ## Quick Start
 
 ```typescript
-import { createAgentSession, ModelRuntime, SessionManager } from "trpi-coding-agent";
+import { createAgentSession, ModelRuntime, SessionManager } from "tr-confidential-cowork";
 
 const modelRuntime = await ModelRuntime.create();
 const { session } = await createAgentSession({
@@ -35,18 +35,18 @@ await session.prompt("What files are in the current directory?");
 
 ## Source workspace setup
 
-`trpi-coding-agent` is a private workspace package in this repository; it is not currently published to npm. Build it from a source checkout before running the SDK examples:
+`tr-confidential-cowork` is a private workspace package in this repository; it is not currently published to npm. Build it from a source checkout before running the SDK examples:
 
 ```bash
 git clone https://github.com/Lore-Hex/trpi.git
-cd trpi
+cd tr-cowork
 npm ci --ignore-scripts
 npm run hydrate:model-data
 npm run build:offline
 npx tsx packages/coding-agent/examples/sdk/01-minimal.ts
 ```
 
-Code inside the source workspace can import the package as `trpi-coding-agent`, as shown below.
+Code inside the source workspace can import the package as `tr-confidential-cowork`, as shown below.
 
 ## Core Concepts
 
@@ -57,7 +57,7 @@ The main factory function for a single `AgentSession`.
 `createAgentSession()` uses a `ResourceLoader` to supply extensions, skills, prompt templates, themes, and context files. If you do not provide one, it uses `DefaultResourceLoader` with standard discovery.
 
 ```typescript
-import { createAgentSession, SessionManager } from "trpi-coding-agent";
+import { createAgentSession, SessionManager } from "tr-confidential-cowork";
 
 // Minimal: defaults with DefaultResourceLoader
 const { session } = await createAgentSession();
@@ -135,7 +135,7 @@ import {
   createAgentSessionServices,
   getAgentDir,
   SessionManager,
-} from "trpi-coding-agent";
+} from "tr-confidential-cowork";
 
 const createRuntime: CreateAgentSessionRuntimeFactory = async ({ cwd, sessionManager, sessionStartEvent }) => {
   const services = await createAgentSessionServices({ cwd });
@@ -344,23 +344,23 @@ const { session } = await createAgentSession({
   cwd: process.cwd(), // default
   
   // Global config directory
-  agentDir: "~/.trpi/agent", // default (expands ~)
+  agentDir: "~/.tr-confidential-cowork/agent", // default (expands ~)
 });
 ```
 
 `cwd` is used by `DefaultResourceLoader` for:
-- Project extensions (`.trpi/extensions/`)
+- Project extensions (`.tr-confidential-cowork/extensions/`)
 - Project skills:
-  - `.trpi/skills/`
+  - `.tr-confidential-cowork/skills/`
   - `.agents/skills/` in `cwd` and ancestor directories (up to git repo root, or filesystem root when not in a repo)
-- Project prompts (`.trpi/prompts/`)
+- Project prompts (`.tr-confidential-cowork/prompts/`)
 - Context files (`AGENTS.md` walking up from cwd)
 - Session directory naming
 
 `agentDir` is used by `DefaultResourceLoader` for:
 - Global extensions (`extensions/`)
 - Global skills:
-  - `skills/` under `agentDir` (for example `~/.trpi/agent/skills/`)
+  - `skills/` under `agentDir` (for example `~/.tr-confidential-cowork/agent/skills/`)
   - `~/.agents/skills/`
 - Global prompts (`prompts/`)
 - Global context file (`AGENTS.md`)
@@ -375,7 +375,7 @@ When you pass a custom `ResourceLoader`, `cwd` and `agentDir` no longer control 
 
 ```typescript
 import { getModel } from "@earendil-works/pi-ai";
-import { ModelRuntime } from "trpi-coding-agent";
+import { ModelRuntime } from "tr-confidential-cowork";
 
 const modelRuntime = await ModelRuntime.create();
 
@@ -416,7 +416,7 @@ If no model is provided:
 2. Uses default from settings
 3. Falls back to first available model
 
-Remote catalogs are persisted locally so later runtimes can restore them without a network request. The default file is `~/.trpi/agent/models-store.json`; set `modelsStorePath` to choose another location, or inject `modelsStore` to control persistence. Network refreshes are throttled to once per provider every four hours unless forced. To force an immediate refresh, call `await modelRuntime.refresh({ allowNetwork: true, force: true, signal })`. Setting `TRPI_OFFLINE` disables model network access; the legacy `PI_OFFLINE` name remains accepted for compatibility.
+Remote catalogs are persisted locally so later runtimes can restore them without a network request. The default file is `~/.tr-confidential-cowork/agent/models-store.json`; set `modelsStorePath` to choose another location, or inject `modelsStore` to control persistence. Network refreshes are throttled to once per provider every four hours unless forced. To force an immediate refresh, call `await modelRuntime.refresh({ allowNetwork: true, force: true, signal })`. Setting `TR_COWORK_OFFLINE` disables model network access; the legacy `PI_OFFLINE` name remains accepted for compatibility.
 
 To match CLI model parsing, use the exported resolver helpers:
 
@@ -424,7 +424,7 @@ To match CLI model parsing, use the exported resolver helpers:
 import {
   resolveCliModel,
   resolveModelScopeWithDiagnostics,
-} from "trpi-coding-agent";
+} from "tr-confidential-cowork";
 
 const cliModel = resolveCliModel({
   cliModel: "anthropic/claude-opus-4-5:high",
@@ -456,9 +456,9 @@ Authentication resolution priority (handled by `ModelRuntime`):
 
 ```typescript
 import { InMemoryCredentialStore } from "@earendil-works/pi-ai";
-import { createAgentSession, ModelRuntime } from "trpi-coding-agent";
+import { createAgentSession, ModelRuntime } from "tr-confidential-cowork";
 
-// Default: uses ~/.trpi/agent/auth.json and ~/.trpi/agent/models.json
+// Default: uses ~/.tr-confidential-cowork/agent/auth.json and ~/.tr-confidential-cowork/agent/models.json
 const modelRuntime = await ModelRuntime.create();
 
 // Provider-owned auth methods and current status
@@ -510,7 +510,7 @@ A failed or timed-out network refresh does not undo a successful credential oper
 Use a `ResourceLoader` to override the system prompt:
 
 ```typescript
-import { createAgentSession, DefaultResourceLoader } from "trpi-coding-agent";
+import { createAgentSession, DefaultResourceLoader } from "tr-confidential-cowork";
 
 const loader = new DefaultResourceLoader({
   systemPromptOverride: () => "You are a helpful assistant.",
@@ -526,16 +526,16 @@ const { session } = await createAgentSession({ resourceLoader: loader });
 
 Specify which built-in tools to enable:
 
-- Built-in tool names: `read`, `bash`, `edit`, `write`, `grep`, `find`, `ls`
+- Built-in tool names: `read`, `bash`, `powershell`, `edit`, `write`, `grep`, `find`, `ls`
 - Default built-ins: `read`, `bash`, `edit`, `write`
 - `noTools: "all"` disables all tools
 - `noTools: "builtin"` disables default built-ins while keeping extension and custom tools enabled
 - `excludeTools` disables specific built-in, extension, or custom tool names after any `tools` allowlist is applied
 
-The `edit` tool returns `details.diff` for TRPI's TUI display and `details.patch` as a standard unified patch for SDK consumers.
+The `edit` tool returns `details.diff` for TR Confidential Cowork's TUI display and `details.patch` as a standard unified patch for SDK consumers.
 
 ```typescript
-import { createAgentSession } from "trpi-coding-agent";
+import { createAgentSession } from "tr-confidential-cowork";
 
 // Read-only mode
 const { session } = await createAgentSession({
@@ -545,6 +545,11 @@ const { session } = await createAgentSession({
 // Pick specific tools
 const { session } = await createAgentSession({
   tools: ["read", "bash", "grep"],
+});
+
+// Use PowerShell instead of Bash on Windows
+const { session } = await createAgentSession({
+  tools: ["read", "powershell", "edit", "write"],
 });
 
 // Disable one tool while keeping the rest available
@@ -558,7 +563,7 @@ const { session } = await createAgentSession({
 When you pass a custom `cwd`, `createAgentSession()` builds selected built-in tools for that cwd.
 
 ```typescript
-import { createAgentSession, SessionManager } from "trpi-coding-agent";
+import { createAgentSession, SessionManager } from "tr-confidential-cowork";
 
 const cwd = "/path/to/project";
 
@@ -582,7 +587,7 @@ const { session } = await createAgentSession({
 
 ```typescript
 import { Type } from "typebox";
-import { createAgentSession, defineTool } from "trpi-coding-agent";
+import { createAgentSession, defineTool } from "tr-confidential-cowork";
 
 // Inline custom tool
 const myTool = defineTool({
@@ -614,10 +619,10 @@ If you pass `tools`, include each custom or extension tool name you want enabled
 
 ### Extensions
 
-Extensions are loaded by the `ResourceLoader`. `DefaultResourceLoader` discovers extensions from `~/.trpi/agent/extensions/`, `.trpi/extensions/`, and settings.json extension sources.
+Extensions are loaded by the `ResourceLoader`. `DefaultResourceLoader` discovers extensions from `~/.tr-confidential-cowork/agent/extensions/`, `.tr-confidential-cowork/extensions/`, and settings.json extension sources.
 
 ```typescript
-import { createAgentSession, DefaultResourceLoader } from "trpi-coding-agent";
+import { createAgentSession, DefaultResourceLoader } from "tr-confidential-cowork";
 
 const loader = new DefaultResourceLoader({
   additionalExtensionPaths: ["/path/to/my-extension.ts"],
@@ -639,7 +644,7 @@ Extensions can register tools, subscribe to events, add commands, and more. See 
 **Named inline extensions:** By default, inline factories display as `<inline:1>`, `<inline:2>`, etc. in the startup Extensions list. To show a descriptive name instead, wrap the factory:
 
 ```typescript
-import type { InlineExtension } from "trpi-coding-agent";
+import type { InlineExtension } from "tr-confidential-cowork";
 
 const myProvider: InlineExtension = {
   name: "my-provider",
@@ -660,7 +665,7 @@ This displays as `<inline:my-provider>` instead of `<inline:1>`. Bare factory fu
 **Event Bus:** Extensions can communicate via `pi.events`. Pass a shared `eventBus` to `DefaultResourceLoader` if you need to emit or listen from outside:
 
 ```typescript
-import { createEventBus, DefaultResourceLoader } from "trpi-coding-agent";
+import { createEventBus, DefaultResourceLoader } from "tr-confidential-cowork";
 
 const eventBus = createEventBus();
 const loader = new DefaultResourceLoader({
@@ -680,7 +685,7 @@ import {
   createAgentSession,
   DefaultResourceLoader,
   type Skill,
-} from "trpi-coding-agent";
+} from "tr-confidential-cowork";
 
 const customSkill: Skill = {
   name: "my-skill",
@@ -706,7 +711,7 @@ const { session } = await createAgentSession({ resourceLoader: loader });
 ### Context Files
 
 ```typescript
-import { createAgentSession, DefaultResourceLoader } from "trpi-coding-agent";
+import { createAgentSession, DefaultResourceLoader } from "tr-confidential-cowork";
 
 const loader = new DefaultResourceLoader({
   agentsFilesOverride: (current) => ({
@@ -730,7 +735,7 @@ import {
   createAgentSession,
   DefaultResourceLoader,
   type PromptTemplate,
-} from "trpi-coding-agent";
+} from "tr-confidential-cowork";
 
 const customCommand: PromptTemplate = {
   name: "deploy",
@@ -765,7 +770,7 @@ import {
   createAgentSessionServices,
   getAgentDir,
   SessionManager,
-} from "trpi-coding-agent";
+} from "tr-confidential-cowork";
 
 // In-memory (no persistence)
 const { session } = await createAgentSession({
@@ -859,7 +864,7 @@ sm.createBranchedSession(leafId);       // Extract path to new file
 ### Settings Management
 
 ```typescript
-import { createAgentSession, SettingsManager, SessionManager } from "trpi-coding-agent";
+import { createAgentSession, SettingsManager, SessionManager } from "tr-confidential-cowork";
 
 // Default: loads from files (global + project merged)
 const { session } = await createAgentSession({
@@ -893,8 +898,8 @@ const { session } = await createAgentSession({
 **Project-specific settings:**
 
 Settings load from two locations and merge:
-1. Global: `~/.trpi/agent/settings.json`
-2. Project: `<cwd>/.trpi/settings.json`
+1. Global: `~/.tr-confidential-cowork/agent/settings.json`
+2. Project: `<cwd>/.tr-confidential-cowork/settings.json`
 
 Project overrides global. Nested objects merge keys. Setters modify global settings by default.
 
@@ -915,7 +920,7 @@ Use `DefaultResourceLoader` to discover extensions, skills, prompts, themes, and
 import {
   DefaultResourceLoader,
   getAgentDir,
-} from "trpi-coding-agent";
+} from "tr-confidential-cowork";
 
 const loader = new DefaultResourceLoader({
   cwd,
@@ -965,7 +970,7 @@ import {
   ModelRuntime,
   SessionManager,
   SettingsManager,
-} from "trpi-coding-agent";
+} from "tr-confidential-cowork";
 
 const modelRuntime = await ModelRuntime.create({
   authPath: "/custom/agent/auth.json",
@@ -1046,7 +1051,7 @@ import {
   getAgentDir,
   InteractiveMode,
   SessionManager,
-} from "trpi-coding-agent";
+} from "tr-confidential-cowork";
 
 const createRuntime: CreateAgentSessionRuntimeFactory = async ({ cwd, sessionManager, sessionStartEvent }) => {
   const services = await createAgentSessionServices({ cwd });
@@ -1086,7 +1091,7 @@ import {
   getAgentDir,
   runPrintMode,
   SessionManager,
-} from "trpi-coding-agent";
+} from "tr-confidential-cowork";
 
 const createRuntime: CreateAgentSessionRuntimeFactory = async ({ cwd, sessionManager, sessionStartEvent }) => {
   const services = await createAgentSessionServices({ cwd });
@@ -1123,7 +1128,7 @@ import {
   getAgentDir,
   runRpcMode,
   SessionManager,
-} from "trpi-coding-agent";
+} from "tr-confidential-cowork";
 
 const createRuntime: CreateAgentSessionRuntimeFactory = async ({ cwd, sessionManager, sessionStartEvent }) => {
   const services = await createAgentSessionServices({ cwd });
@@ -1149,7 +1154,7 @@ See [RPC documentation](rpc.md) for the JSON protocol.
 For subprocess-based integration without building with the SDK, use the CLI directly:
 
 ```bash
-trpi --mode rpc --no-session
+tr-cowork --mode rpc --no-session
 ```
 
 See [RPC documentation](rpc.md) for the JSON protocol.
@@ -1203,7 +1208,7 @@ SettingsManager
 // Tool factories
 createCodingTools
 createReadOnlyTools
-createReadTool, createBashTool, createEditTool, createWriteTool
+createReadTool, createBashTool, createPowerShellTool, createEditTool, createWriteTool
 createGrepTool, createFindTool, createLsTool
 
 // Types

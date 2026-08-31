@@ -1,11 +1,11 @@
 # DOOM Overlay Demo
 
-Play DOOM as an overlay in TRPI. Demonstrates that the overlay system can handle real-time game rendering at 35 FPS.
+Play DOOM as an overlay in TR Confidential Cowork. Demonstrates that the overlay system can handle real-time game rendering at 35 FPS.
 
 ## Usage
 
 ```bash
-trpi --extension ./examples/extensions/doom-overlay
+tr-cowork --extension ./examples/extensions/doom-overlay
 ```
 
 Then run:

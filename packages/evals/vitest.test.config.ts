@@ -8,7 +8,7 @@ export default mergeConfig(
 			include: ["test/**/*.test.ts"],
 		},
 		resolve: {
-			alias: [{ find: /^trpi-coding-agent$/, replacement: workspaceSourcePaths.codingAgentIndex }],
+			alias: [{ find: /^tr-confidential-cowork$/, replacement: workspaceSourcePaths.codingAgentIndex }],
 		},
 	}),
 );

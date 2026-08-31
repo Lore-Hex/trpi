@@ -178,10 +178,10 @@ describe("TrustedRouter model runtime", () => {
 		expect(runtime.getProvider("trustedrouter")?.refreshModels).toBe(refreshModels);
 	});
 
-	it("treats TRPI_OFFLINE as cache-only for SDK catalog refreshes", async () => {
+	it("treats TR_COWORK_OFFLINE as cache-only for SDK catalog refreshes", async () => {
 		const refreshModels = vi.fn(async (_context: RefreshModelsContext) => {});
 		builtinCatalog.providers = [testProvider("trustedrouter", trustedRouterModels, refreshModels)];
-		vi.stubEnv("TRPI_OFFLINE", "1");
+		vi.stubEnv("TR_COWORK_OFFLINE", "1");
 		vi.stubEnv("PI_OFFLINE", undefined);
 
 		const credentials = new InMemoryCredentialStore();

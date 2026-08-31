@@ -1,15 +1,15 @@
 # Extension Examples
 
-Example extensions for TRPI.
+Example extensions for TR Confidential Cowork.
 
 ## Usage
 
 ```bash
 # Load an extension with --extension flag
-trpi --extension examples/extensions/permission-gate.ts
+tr-cowork --extension examples/extensions/permission-gate.ts
 
 # Or copy to extensions directory for auto-discovery
-cp permission-gate.ts ~/.trpi/agent/extensions/
+cp permission-gate.ts ~/.tr-confidential-cowork/agent/extensions/
 ```
 
 ## Examples
@@ -100,7 +100,7 @@ cp permission-gate.ts ~/.trpi/agent/extensions/
 
 | Extension | Description |
 |-----------|-------------|
-| `mac-system-theme.ts` | Syncs the TRPI theme with macOS dark/light mode |
+| `mac-system-theme.ts` | Syncs the TR Confidential Cowork theme with macOS dark/light mode |
 
 ### Resources
 

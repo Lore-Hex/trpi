@@ -1,5 +1,5 @@
 /**
- * TRPI Redraws Extension
+ * TR Confidential Cowork Redraws Extension
  *
  * Exposes /tui to show TUI redraw stats.
  */

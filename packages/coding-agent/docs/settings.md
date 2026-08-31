@@ -1,25 +1,25 @@
 # Settings
 
-TRPI uses JSON settings files with project settings overriding global settings.
+TR Confidential Cowork uses JSON settings files with project settings overriding global settings.
 
 | Location | Scope |
 |----------|-------|
-| `~/.trpi/agent/settings.json` | Global (all projects) |
-| `.trpi/settings.json` | Project (current directory) |
+| `~/.tr-confidential-cowork/agent/settings.json` | Global (all projects) |
+| `.tr-confidential-cowork/settings.json` | Project (current directory) |
 
-Edit directly or use `/settings` for common options.
+Edit directly or use `/settings` for common options. To save startup model defaults interactively, use `/model` and press Ctrl+S on the desired model. To save the startup thinking level, use `/thinking` and press Ctrl+S.
 
 ## Project Trust
 
-On interactive startup, TRPI asks before trusting a project folder that contains project-local settings, resources, or project `.agents/skills` and has no saved decision for the folder or a parent folder in `~/.trpi/agent/trust.json`. Trusting a project allows TRPI to load `.trpi/settings.json` and `.trpi` resources, install missing project packages, and execute project extensions.
+On interactive startup, TR Confidential Cowork asks before trusting a project folder that contains project-local settings, resources, or project `.agents/skills` and has no saved decision for the folder or a parent folder in `~/.tr-confidential-cowork/agent/trust.json`. Trusting a project allows TR Confidential Cowork to load `.tr-confidential-cowork/settings.json` and `.tr-confidential-cowork` resources, install missing project packages, and execute project extensions.
 
 Non-interactive modes (`-p`, `--mode json`, and `--mode rpc`) do not show a trust prompt. Without an applicable saved trust decision, they use `defaultProjectTrust` from global settings: `ask` (default) and `never` ignore those project resources, while `always` trusts them. Pass `--approve`/`-a` or `--no-approve`/`-na` to override project trust for one run.
 
-If no extension or saved decision applies, `defaultProjectTrust` controls the fallback behavior. Set it to `"ask"`, `"always"`, or `"never"` in `~/.trpi/agent/settings.json`, or change it with `/settings`.
+If no extension or saved decision applies, `defaultProjectTrust` controls the fallback behavior. Set it to `"ask"`, `"always"`, or `"never"` in `~/.tr-confidential-cowork/agent/settings.json`, or change it with `/settings`.
 
-`trpi config` and package commands use the same project trust flow, except `trpi update` never prompts. Pass `--approve` to trust project-local settings for one command or `--no-approve` to ignore them.
+`tr-cowork config` and package commands use the same project trust flow, except `tr-cowork update` never prompts. Pass `--approve` to trust project-local settings for one command or `--no-approve` to ignore them.
 
-Use `/trust` in interactive mode to save a project trust decision for future sessions, including trust for the immediate parent folder. It writes `~/.trpi/agent/trust.json` only; the current session is not reloaded, so restart TRPI for changes to take effect.
+Use `/trust` in interactive mode to save a project trust decision for future sessions, including trust for the immediate parent folder. It writes `~/.tr-confidential-cowork/agent/trust.json` only; the current session is not reloaded, so restart TR Confidential Cowork for changes to take effect.
 
 ## All Settings
 
@@ -27,9 +27,10 @@ Use `/trust` in interactive mode to save a project trust decision for future ses
 
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
-| `defaultProvider` | string | - | Default provider (e.g., `"anthropic"`, `"openai"`) |
-| `defaultModel` | string | - | Default model ID |
-| `defaultThinkingLevel` | string | - | `"off"`, `"minimal"`, `"low"`, `"medium"`, `"high"`, `"xhigh"`, `"max"` |
+| `defaultProvider` | string | - | Startup provider (e.g., `"anthropic"`, `"openai"`; saved with Ctrl+S in `/model`, or edited manually) |
+| `defaultModel` | string | - | Startup model ID (saved with Ctrl+S in `/model`, or edited manually) |
+| `defaultThinkingLevel` | string | - | Startup thinking level (saved with Ctrl+S in `/thinking`, or edited manually): `"off"`, `"minimal"`, `"low"`, `"medium"`, `"high"`, `"xhigh"`, `"max"` |
+| `modelThinkingLevels` | object | - | Per-model startup thinking levels keyed by `"provider/modelId"`; configure from `/settings` → Default thinking level per model or edit manually |
 | `hideThinkingBlock` | boolean | `false` | Hide thinking blocks in output |
 | `showCacheMissNotices` | boolean | `false` | Show transcript notices for significant prompt-cache misses and compaction or branch-summary usage |
 | `thinkingBudgets` | object | - | Custom token budgets per thinking level. Anthropic, Google, and Bedrock use these natively. OpenAI-compatible models use them when `compat.thinkingTokenBudgetField` (or `supportsThinkingTokenBudget`) is set. |
@@ -56,8 +57,8 @@ Use `/trust` in interactive mode to save a project trust decision for future ses
 | `quietStartup` | boolean | `false` | Hide startup header |
 | `defaultProjectTrust` | string | `"ask"` | Fallback project trust behavior: `"ask"`, `"always"`, or `"never"`. Global setting only |
 | `collapseChangelog` | boolean | `false` | Show condensed changelog after updates |
-| `enableInstallTelemetry` | boolean | `true` | Legacy Pi setting retained for configuration compatibility; TRPI does not send install/update telemetry |
-| `enableAnalytics` | boolean | `false` | Inherited opt-in preference retained for compatibility; TRPI does not configure an analytics endpoint |
+| `enableInstallTelemetry` | boolean | `true` | Legacy Pi setting retained for configuration compatibility; TR Confidential Cowork does not send install/update telemetry |
+| `enableAnalytics` | boolean | `false` | Inherited opt-in preference retained for compatibility; TR Confidential Cowork does not configure an analytics endpoint |
 | `trackingId` | string | - | Inherited analytics identifier retained for settings compatibility |
 | `doubleEscapeAction` | string | `"tree"` | Action for double-escape: `"tree"`, `"fork"`, or `"none"` |
 | `treeFilterMode` | string | `"default"` | Default filter for `/tree`: `"default"`, `"no-tools"`, `"user-only"`, `"labeled-only"`, `"all"` |
@@ -68,8 +69,9 @@ Use `/trust` in interactive mode to save a project trust decision for future ses
 | `tuiMode` | string | `"regular"` | Interactive TUI mode: `"regular"` or experimental `"fullscreen"`. Changes from `/settings` apply immediately; `--tui-mode` overrides this setting at startup |
 | `fullscreenExitOutput` | string | `"transcript"` | Fullscreen exit output: `"transcript"` prints the final transcript and resume hint, while `"resume-hint"` restores the previous screen and prints only the resume hint. Has no effect in regular TUI mode |
 | `fullscreenScrollbar` | string | `"auto"` | Fullscreen transcript scrollbar: `"auto"` shows it temporarily while scrolling, `"always"` reserves the rightmost column and keeps it visible, and `"hidden"` hides it. Has no effect in regular TUI mode |
+| `fullscreenCopyOnSelect` | boolean | `true` | Automatically copy selected text in fullscreen mode. When disabled, selections stay highlighted and `Ctrl+X` copies the active selection |
 
-For VS Code, include `--wait` so TRPI resumes after the editor exits:
+For VS Code, include `--wait` so TR Confidential Cowork resumes after the editor exits:
 
 ```json
 {
@@ -79,9 +81,9 @@ For VS Code, include `--wait` so TRPI resumes after the editor exits:
 
 ### Telemetry and update checks
 
-TRPI does not send the upstream Pi install/update ping. The inherited `enableInstallTelemetry` setting is retained for configuration compatibility but has no network effect.
+TR Confidential Cowork does not send the upstream Pi install/update ping. The inherited `enableInstallTelemetry` setting is retained for configuration compatibility but has no network effect.
 
-Version checks read the latest [Lore-Hex/trpi GitHub release](https://github.com/Lore-Hex/trpi/releases), unless `TRPI_LATEST_VERSION_URL` overrides the metadata URL. Set `TRPI_SKIP_VERSION_CHECK=1` to disable that check. Use `--offline` or `TRPI_OFFLINE=1` to disable startup network operations, including version checks, package update checks, and remote model-catalog refreshes. The inherited `PI_SKIP_VERSION_CHECK` and `PI_OFFLINE` names remain accepted as compatibility aliases.
+Version checks read the latest [Lore-Hex/trpi GitHub release](https://github.com/Lore-Hex/trpi/releases), unless `TR_COWORK_LATEST_VERSION_URL` overrides the metadata URL. Set `TR_COWORK_SKIP_VERSION_CHECK=1` to disable that check. Use `--offline` or `TR_COWORK_OFFLINE=1` to disable startup network operations, including version checks, package update checks, and remote model-catalog refreshes. The inherited `PI_SKIP_VERSION_CHECK` and `PI_OFFLINE` names remain accepted as compatibility aliases.
 
 ### Network
 
@@ -147,7 +149,7 @@ Version checks read the latest [Lore-Hex/trpi GitHub release](https://github.com
 
 When a provider requests a retry delay longer than `retry.provider.maxRetryDelayMs`, the request fails immediately with an informative error instead of waiting silently. Set it to `0` to disable the limit.
 
-Keep `retry.provider.maxRetries` at `0` unless provider-level retries are explicitly needed. Setting it above `0` can make SDK/provider retries handle out-of-usage-limit errors before TRPI sees them, which may block the agent until the provider quota resets in some circumstances.
+Keep `retry.provider.maxRetries` at `0` unless provider-level retries are explicitly needed. Setting it above `0` can make SDK/provider retries handle out-of-usage-limit errors before TR Confidential Cowork sees them, which may block the agent until the provider quota resets in some circumstances.
 
 ```json
 {
@@ -181,6 +183,9 @@ Keep `retry.provider.maxRetries` at `0` unless provider-level retries are explic
 | `terminal.showImages` | boolean | `true` | Show images in terminal (if supported) |
 | `terminal.imageWidthCells` | number | `60` | Preferred inline image width in terminal cells |
 | `terminal.clearOnShrink` | boolean | `false` | Clear empty rows when content shrinks (can cause flicker) |
+| `terminal.hyperlinks` | boolean or `"auto"` | `"auto"` | Override OSC 8 hyperlink support (advanced, JSON-only) |
+| `terminal.images` | string or boolean | `"auto"` | Override image protocol support with `"kitty"`, `"iterm2"`, `false`, or `"auto"` (advanced, JSON-only) |
+| `terminal.trueColor` | boolean or `"auto"` | `"auto"` | Override truecolor support (advanced, JSON-only) |
 | `images.autoResize` | boolean | `true` | Resize images to 2000x2000 max. Applies to `@file` attachments, `read`, and images returned by tools |
 | `images.blockImages` | boolean | `false` | Block all images from being sent to LLM |
 
@@ -212,19 +217,27 @@ Windows paths in JSON must use forward slashes or escaped backslashes:
 }
 ```
 
-`npmCommand` is used for all npm package-manager operations, including installs, uninstalls, and dependency installs inside git packages. User-scoped npm packages install under `~/.trpi/agent/npm/`; project-scoped npm packages install under `.trpi/npm/`. Use argv-style entries exactly as the process should be launched. When `npmCommand` is configured, git package dependency installs use plain `install` to avoid npm-specific flags in wrappers or alternate package managers.
+`npmCommand` is used for all npm package-manager operations, including installs, uninstalls, and dependency installs inside git packages. User-scoped npm packages install under `~/.tr-confidential-cowork/agent/npm/`; project-scoped npm packages install under `.tr-confidential-cowork/npm/`. Use argv-style entries exactly as the process should be launched. When `npmCommand` is configured, git package dependency installs use plain `install` to avoid npm-specific flags in wrappers or alternate package managers.
 
 ### Tools
 
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
-| `defaultTools` | string[] | - | Built-in tools enabled initially. When omitted, TRPI uses its standard defaults |
+| `defaultTools` | string[] | - | Built-in tools enabled initially. When omitted, TR Confidential Cowork uses its standard defaults |
 
-`defaultTools` selects the built-in tools enabled at startup. Extension and SDK custom tools remain enabled:
+`defaultTools` selects the built-in tools enabled at startup. Extension and SDK custom tools remain enabled. Available built-ins are `read`, `bash`, `powershell`, `edit`, `write`, `grep`, `find`, and `ls`:
 
 ```json
 {
   "defaultTools": ["bash", "edit", "write"]
+}
+```
+
+On Windows, select `powershell` instead of `bash`, or include both:
+
+```json
+{
+  "defaultTools": ["read", "powershell", "edit", "write"]
 }
 ```
 
@@ -237,10 +250,10 @@ An empty array starts with no built-in tools while preserving extension and SDK 
 | `sessionDir` | string | - | Directory where session files are stored. Accepts absolute or relative paths, plus `~`. |
 
 ```json
-{ "sessionDir": ".trpi/sessions" }
+{ "sessionDir": ".tr-confidential-cowork/sessions" }
 ```
 
-When multiple sources specify a session directory, precedence is `--session-dir`, `TRPI_CODING_AGENT_SESSION_DIR`, then `sessionDir` in `settings.json`.
+When multiple sources specify a session directory, precedence is `--session-dir`, `TR_COWORK_CODING_AGENT_SESSION_DIR`, then `sessionDir` in `settings.json`.
 
 ### Model Cycling
 
@@ -265,7 +278,7 @@ When multiple sources specify a session directory, precedence is `--session-dir`
 
 These settings define where to load extensions, skills, prompts, and themes from.
 
-Paths in `~/.trpi/agent/settings.json` resolve relative to `~/.trpi/agent`. Paths in `.trpi/settings.json` resolve relative to `.trpi`. Absolute paths and `~` are supported.
+Paths in `~/.tr-confidential-cowork/agent/settings.json` resolve relative to `~/.tr-confidential-cowork/agent`. Paths in `.tr-confidential-cowork/settings.json` resolve relative to `.tr-confidential-cowork`. Absolute paths and `~` are supported.
 
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
@@ -311,6 +324,9 @@ See [packages.md](packages.md) for package management details.
   "defaultProvider": "anthropic",
   "defaultModel": "claude-sonnet-4-20250514",
   "defaultThinkingLevel": "medium",
+  "modelThinkingLevels": {
+    "anthropic/claude-sonnet-4-20250514": "high"
+  },
   "theme": "dark",
   "compaction": {
     "enabled": true,
@@ -331,16 +347,16 @@ See [packages.md](packages.md) for package management details.
 
 ## Project Overrides
 
-Project settings (`.trpi/settings.json`) override global settings. Nested objects are merged:
+Project settings (`.tr-confidential-cowork/settings.json`) override global settings. Nested objects are merged:
 
 ```json
-// ~/.trpi/agent/settings.json (global)
+// ~/.tr-confidential-cowork/agent/settings.json (global)
 {
   "theme": "dark",
   "compaction": { "enabled": true, "reserveTokens": 16384 }
 }
 
-// .trpi/settings.json (project)
+// .tr-confidential-cowork/settings.json (project)
 {
   "compaction": { "reserveTokens": 8192 }
 }

@@ -291,7 +291,7 @@ function uniqueChanges(changes) {
 }
 
 function updateGithubRelease(repo, tag, body) {
-	const tempDir = mkdtempSync(path.join(tmpdir(), "trpi-release-notes-"));
+	const tempDir = mkdtempSync(path.join(tmpdir(), "tr-cowork-release-notes-"));
 	try {
 		const notesPath = path.join(tempDir, "notes.md");
 		writeFileSync(notesPath, body);

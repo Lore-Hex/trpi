@@ -30,11 +30,11 @@ See these complete provider examples:
 
 ## Quick Reference
 
-Extensions can register either a complete `@earendil-works/pi-ai` `Provider` or use the legacy provider-config form. Prefer a complete provider when custom authentication, filtering, refresh, or streaming behavior is required. TRPI composes `models.json` overrides above registered native providers.
+Extensions can register either a complete `@earendil-works/pi-ai` `Provider` or use the legacy provider-config form. Prefer a complete provider when custom authentication, filtering, refresh, or streaming behavior is required. TR Confidential Cowork composes `models.json` overrides above registered native providers.
 
 ```typescript
 import { createProvider, openAICompletionsApi } from "@earendil-works/pi-ai";
-import type { ExtensionAPI } from "trpi-coding-agent";
+import type { ExtensionAPI } from "tr-confidential-cowork";
 
 export default function (pi: ExtensionAPI) {
   pi.registerProvider(createProvider({
@@ -88,7 +88,7 @@ export default function (pi: ExtensionAPI) {
 }
 ```
 
-The extension factory can also be `async`. For dynamic model discovery, fetch and register models in the factory instead of `session_start`. TRPI waits for the factory before startup continues, so the provider is available during interactive startup and to `trpi --list-models`.
+The extension factory can also be `async`. For dynamic model discovery, fetch and register models in the factory instead of `session_start`. TR Confidential Cowork waits for the factory before startup continues, so the provider is available during interactive startup and to `tr-cowork --list-models`.
 
 ## Override Existing Provider
 
@@ -125,7 +125,7 @@ To add a completely new provider, specify `models` along with the required confi
 If the model list comes from a remote endpoint, use an async extension factory:
 
 ```typescript
-import type { ExtensionAPI } from "trpi-coding-agent";
+import type { ExtensionAPI } from "tr-confidential-cowork";
 
 export default async function (pi: ExtensionAPI) {
   const response = await fetch("http://localhost:1234/v1/models");
@@ -239,7 +239,7 @@ models: [{
   id: "custom-model",
   // ...
   reasoning: true,
-  thinkingLevelMap: {              // map TRPI levels to provider values; null hides unsupported levels
+  thinkingLevelMap: {              // map TR Confidential Cowork levels to provider values; null hides unsupported levels
     minimal: null,
     low: null,
     medium: null,
@@ -382,7 +382,7 @@ interface OAuthLoginCallbacks {
 
 ### OAuthCredentials
 
-Credentials are persisted in `~/.trpi/agent/auth.json`:
+Credentials are persisted in `~/.tr-confidential-cowork/agent/auth.json`:
 
 ```typescript
 interface OAuthCredentials {
@@ -394,15 +394,15 @@ interface OAuthCredentials {
 
 ## Custom Streaming API
 
-For providers with non-standard APIs, implement `streamSimple`. Study the existing provider implementations before writing your own:
+For providers with non-standard APIs, implement `streamSimple`. Study the existing API implementations before writing your own:
 
 **Reference implementations:**
-- [anthropic.ts](https://github.com/earendil-works/pi-mono/blob/main/packages/ai/src/providers/anthropic.ts) - Anthropic Messages API
-- [mistral.ts](https://github.com/earendil-works/pi-mono/blob/main/packages/ai/src/providers/mistral.ts) - Mistral Conversations API
-- [openai-completions.ts](https://github.com/earendil-works/pi-mono/blob/main/packages/ai/src/providers/openai-completions.ts) - OpenAI Chat Completions
-- [openai-responses.ts](https://github.com/earendil-works/pi-mono/blob/main/packages/ai/src/providers/openai-responses.ts) - OpenAI Responses API
-- [google.ts](https://github.com/earendil-works/pi-mono/blob/main/packages/ai/src/providers/google.ts) - Google Generative AI
-- [amazon-bedrock.ts](https://github.com/earendil-works/pi-mono/blob/main/packages/ai/src/providers/amazon-bedrock.ts) - AWS Bedrock
+- [anthropic-messages.ts](https://github.com/earendil-works/pi-mono/blob/main/packages/ai/src/api/anthropic-messages.ts) - Anthropic Messages API
+- [mistral-conversations.ts](https://github.com/earendil-works/pi-mono/blob/main/packages/ai/src/api/mistral-conversations.ts) - Mistral Conversations API
+- [openai-completions.ts](https://github.com/earendil-works/pi-mono/blob/main/packages/ai/src/api/openai-completions.ts) - OpenAI Chat Completions
+- [openai-responses.ts](https://github.com/earendil-works/pi-mono/blob/main/packages/ai/src/api/openai-responses.ts) - OpenAI Responses API
+- [google-generative-ai.ts](https://github.com/earendil-works/pi-mono/blob/main/packages/ai/src/api/google-generative-ai.ts) - Google Generative AI
+- [bedrock-converse-stream.ts](https://github.com/earendil-works/pi-mono/blob/main/packages/ai/src/api/bedrock-converse-stream.ts) - AWS Bedrock
 
 ### Stream Pattern
 
@@ -566,14 +566,14 @@ calculateCost(model, output.usage);
 
 ### Context Overflow Errors
 
-When a request exceeds the model's context window, TRPI can recover automatically by compacting the conversation and retrying. This recovery only kicks in if TRPI recognizes the failure as an overflow.
+When a request exceeds the model's context window, TR Confidential Cowork can recover automatically by compacting the conversation and retrying. This recovery only kicks in if TR Confidential Cowork recognizes the failure as an overflow.
 
 Detection runs on the finalized assistant message:
 
 - `stopReason === "error"`
-- `errorMessage` matches one of TRPI's inherited overflow patterns (see the [upstream implementation](https://github.com/earendil-works/pi-mono/blob/main/packages/ai/src/utils/overflow.ts))
+- `errorMessage` matches one of TR Confidential Cowork's inherited overflow patterns (see the [upstream implementation](https://github.com/earendil-works/pi-mono/blob/main/packages/ai/src/utils/overflow.ts))
 
-If your provider returns overflow errors with a message TRPI does not recognize, normalize the error from the same extension that registers the provider. Use a `message_end` handler to rewrite the assistant message so its `errorMessage` starts with a phrase TRPI recognizes. The generic fallback `context_length_exceeded` is the safest choice.
+If your provider returns overflow errors with a message TR Confidential Cowork does not recognize, normalize the error from the same extension that registers the provider. Use a `message_end` handler to rewrite the assistant message so its `errorMessage` starts with a phrase TR Confidential Cowork recognizes. The generic fallback `context_length_exceeded` is the safest choice.
 
 ```typescript
 const MY_PROVIDER_OVERFLOW_PATTERN = /your provider's overflow phrase/i;
@@ -605,7 +605,7 @@ export default function (pi: ExtensionAPI) {
 }
 ```
 
-`message_end` runs before TRPI tracks the assistant message for auto-compaction, so the rewritten `errorMessage` is what TRPI checks. With this in place, TRPI will:
+`message_end` runs before TR Confidential Cowork tracks the assistant message for auto-compaction, so the rewritten `errorMessage` is what TR Confidential Cowork checks. With this in place, TR Confidential Cowork will:
 
 1. Detect the overflow from `errorMessage`.
 2. Drop the failed assistant message from live context.
@@ -615,7 +615,7 @@ export default function (pi: ExtensionAPI) {
 Guard the rewrite carefully:
 
 - Scope it to your provider (`message.provider` and `ctx.model?.provider`) so unrelated errors from other providers are untouched.
-- Match a provider-specific pattern, not TRPI's generic overflow patterns. Rewriting rate-limit or throttling errors (`rate limit`, `too many requests`) would falsely trigger compaction instead of TRPI's normal retry-with-backoff path.
+- Match a provider-specific pattern, not TR Confidential Cowork's generic overflow patterns. Rewriting rate-limit or throttling errors (`rate limit`, `too many requests`) would falsely trigger compaction instead of TR Confidential Cowork's normal retry-with-backoff path.
 - Skip when `errorMessage` already includes `context_length_exceeded` so the handler is idempotent.
 
 ### Registration
@@ -713,7 +713,7 @@ interface ProviderModelConfig {
   /** Whether the model supports extended thinking. */
   reasoning: boolean;
 
-  /** Maps TRPI thinking levels to provider/model-specific values; null marks a level unsupported. */
+  /** Maps TR Confidential Cowork thinking levels to provider/model-specific values; null marks a level unsupported. */
   thinkingLevelMap?: Partial<Record<"off" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max", string | null>>;
 
   /** Supported input types. */

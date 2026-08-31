@@ -1,4 +1,4 @@
-> TRPI can create prompt templates. Ask it to build one for your workflow.
+> TR Confidential Cowork can create prompt templates. Ask it to build one for your workflow.
 
 # Prompt Templates
 
@@ -6,10 +6,10 @@ Prompt templates are Markdown snippets that expand into full prompts. Type `/nam
 
 ## Locations
 
-TRPI loads prompt templates from:
+TR Confidential Cowork loads prompt templates from:
 
-- Global: `~/.trpi/agent/prompts/*.md`
-- Project: `.trpi/prompts/*.md` (only after the project is trusted)
+- Global: `~/.tr-confidential-cowork/agent/prompts/*.md`
+- Project: `.tr-confidential-cowork/prompts/*.md` (only after the project is trusted)
 - Packages: `prompts/` directories or `pi.prompts` entries in `package.json`
 - Settings: `prompts` array with files or directories
 - CLI: `--prompt-template <path>` (repeatable)

@@ -5,7 +5,7 @@
  * when thinking blocks are hidden.
  *
  * Usage:
- *   trpi --extension examples/extensions/hidden-thinking-label.ts
+ *   tr-cowork --extension examples/extensions/hidden-thinking-label.ts
  *
  * Test:
  *   1. Load this extension

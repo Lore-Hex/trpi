@@ -1,16 +1,16 @@
-# Contributing to TRPI
+# Contributing to TR Confidential Cowork
 
-TRPI is a TrustedRouter-first distribution of the Pi coding harness. Contributions should preserve Pi's small core, extension model, and compatibility while keeping TrustedRouter setup and model selection reliable.
+TR Confidential Cowork is a TrustedRouter-first distribution of the Pi coding harness. Contributions should preserve Pi's small core, extension model, and compatibility while keeping TrustedRouter setup and model selection reliable.
 
 ## Before opening an issue
 
 - Search existing issues.
 - Use the bug or contribution template when it fits.
 - Keep the report concise and include a minimal reproduction.
-- For core bugs, retry with `trpi -ne` to rule out loaded extensions.
+- For core bugs, retry with `tr-cowork -ne` to rule out loaded extensions.
 - Never include API keys, auth files, session secrets, or private source code.
 
-TrustedRouter integration reports should include the selected model ID, whether tools were enabled, the TRPI version, and the sanitized error response. Do not include the value of `TRUSTEDROUTER_API_KEY`.
+TrustedRouter integration reports should include the selected model ID, whether tools were enabled, the TR Confidential Cowork version, and the sanitized error response. Do not include the value of `TRUSTEDROUTER_API_KEY`.
 
 ## Before submitting a pull request
 

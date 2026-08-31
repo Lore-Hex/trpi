@@ -5,7 +5,7 @@ import { getPiUserAgent } from "./pi-user-agent.ts";
 const DEFAULT_VERSION_CHECK_TIMEOUT_MS = 10000;
 
 function getLatestVersionUrl(): string {
-	return process.env.TRPI_LATEST_VERSION_URL ?? "https://api.github.com/repos/Lore-Hex/trpi/releases/latest";
+	return process.env.TR_COWORK_LATEST_VERSION_URL ?? "https://api.github.com/repos/Lore-Hex/trpi/releases/latest";
 }
 
 export interface LatestPiRelease {
@@ -55,7 +55,7 @@ export async function getLatestPiRelease(
 	currentVersion: string,
 	options: { timeoutMs?: number; retry?: boolean } = {},
 ): Promise<LatestPiRelease | undefined> {
-	if (process.env.TRPI_OFFLINE || process.env.PI_OFFLINE) return undefined;
+	if (process.env.TR_COWORK_OFFLINE || process.env.PI_OFFLINE) return undefined;
 
 	const response = await fetchWithRetry(
 		getLatestVersionUrl(),
@@ -102,7 +102,7 @@ export async function getLatestPiVersion(
 }
 
 export async function checkForNewPiVersion(currentVersion: string): Promise<LatestPiRelease | undefined> {
-	if (process.env.TRPI_SKIP_VERSION_CHECK || process.env.PI_SKIP_VERSION_CHECK) return undefined;
+	if (process.env.TR_COWORK_SKIP_VERSION_CHECK || process.env.PI_SKIP_VERSION_CHECK) return undefined;
 
 	try {
 		const latestRelease = await getLatestPiRelease(currentVersion);

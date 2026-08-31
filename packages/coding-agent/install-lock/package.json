@@ -1,10 +1,10 @@
 {
-	"name": "trpi-coding-agent-install",
-	"version": "0.84.2",
+	"name": "tr-confidential-cowork-install",
+	"version": "0.84.4",
 	"private": true,
-	"description": "Lockfile root used by the TRPI installer and updater.",
+	"description": "Lockfile root used by the TR Confidential Cowork installer and updater.",
 	"dependencies": {
-		"trpi-coding-agent": "0.84.2"
+		"tr-confidential-cowork": "0.84.4"
 	},
 	"overrides": {
 		"protobufjs": "7.6.5",

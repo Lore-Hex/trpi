@@ -4,7 +4,7 @@
  * Shows how to select a specific model and thinking level.
  */
 
-import { createAgentSession, ModelRuntime } from "trpi-coding-agent";
+import { createAgentSession, ModelRuntime } from "tr-confidential-cowork";
 
 const modelRuntime = await ModelRuntime.create();
 

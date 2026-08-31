@@ -1,6 +1,6 @@
 # Examples
 
-Example code for the `trpi-coding-agent` source-workspace SDK and Pi-compatible extensions.
+Example code for the `tr-confidential-cowork` source-workspace SDK and Pi-compatible extensions.
 
 ## Directories
 

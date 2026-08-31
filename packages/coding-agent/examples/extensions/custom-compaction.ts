@@ -10,7 +10,7 @@
  * which can be cheaper/faster than the main conversation model.
  *
  * Usage:
- *   trpi --extension examples/extensions/custom-compaction.ts
+ *   tr-cowork --extension examples/extensions/custom-compaction.ts
  */
 
 import { uuidv7 } from "@earendil-works/pi-ai";

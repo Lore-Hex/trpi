@@ -1,26 +1,25 @@
-# Environment variables
+# Environment Variables
 
-TRPI uses environment variables in three ways:
+Pi uses environment variables in three ways:
 
-- Variables such as `TRPI_OFFLINE` configure the TRPI process.
-- TRPI sets process markers so child processes can identify it as the launching agent.
-- Commands run by the LLM-callable bash tool receive `PI_*` variables describing the current session.
+- Variables such as `PI_OFFLINE` configure the Pi process.
+- Pi sets process markers so child processes can identify Pi as the launching agent.
+- Commands run by the LLM-callable shell tools receive `PI_*` variables describing the current session.
 
 Provider API-key variables are documented separately in [Providers](providers.md#environment-variables-or-auth-file).
 
-## Process markers
+## Process Marker
 
-The CLI and RPC entry points set three process markers:
+The CLI and RPC entry points set two process markers:
 
-- `AI_AGENT=trpi` is a generic marker that identifies TRPI as the launching agent.
-- `TRPI_CODING_AGENT=true` is the fork's primary process marker.
-- `PI_CODING_AGENT=true` is retained so existing Pi-aware extensions and tools keep working.
+- `AI_AGENT=pi` is a generic marker that lets tooling identify Pi as the agent that launched the process.
+- `PI_CODING_AGENT=true` is Pi-specific and lets child processes detect that they run inside Pi.
 
-Child processes inherit these markers. They are not session-specific and are not set automatically when TRPI is embedded through the SDK.
+Child processes inherit both markers. They are not session-specific and are not set automatically when Pi is embedded through the SDK.
 
-## Bash Tool Session Environment
+## Shell Tool Session Environment
 
-Commands run by the bash tool receive the current TRPI session state through Pi-compatible variable names:
+Commands run by the `bash` and `powershell` tools receive the current Pi session state:
 
 | Variable | Description |
 |----------|-------------|
@@ -30,7 +29,7 @@ Commands run by the bash tool receive the current TRPI session state through Pi-
 | `PI_MODEL` | Currently selected model ID |
 | `PI_REASONING_LEVEL` | Current effective reasoning level: `off`, `minimal`, `low`, `medium`, `high`, `xhigh`, or `max` |
 
-The values are resolved when each command starts. Switching models or changing the reasoning level therefore affects the next bash command without restarting TRPI. `PI_PROVIDER` and `PI_MODEL` identify the selected TRPI catalog model, not a different upstream model that a router may choose internally.
+The values are resolved when each command starts. Switching models or changing the reasoning level therefore affects the next shell command without restarting Pi. `PI_PROVIDER` and `PI_MODEL` identify the selected Pi model, not a different upstream model that a router may choose internally.
 
 When asked which model or provider is running, inspect these variables instead of inferring the answer from the system prompt:
 
@@ -47,11 +46,11 @@ if [ -n "$PI_SESSION_FILE" ]; then
 fi
 ```
 
-These variables are injected into the LLM-callable bash tool. They are not injected into user-entered `!` or `!!` commands.
+These variables are injected into the LLM-callable `bash` and `powershell` tools. They are not injected into user-entered `!` or `!!` commands.
 
-### Custom Bash Tools
+### Custom Shell Tools
 
-Bash tools created with `createBashTool()` expose the session environment by default when registered with TRPI. Injection happens before `spawnHook`, so a hook receives the variables in `ctx.env`:
+Tools created with `createBashTool()` or `createPowerShellTool()` expose the session environment by default when registered with Pi. Injection happens before `spawnHook`, so a hook receives the variables in `ctx.env`:
 
 ```typescript
 const bashTool = createBashTool(cwd, {
@@ -65,35 +64,35 @@ const bashTool = createBashTool(cwd, {
 Disable session metadata independently of the spawn hook:
 
 ```typescript
-const bashTool = createBashTool(cwd, {
+const powershellTool = createPowerShellTool(cwd, {
   exposeSessionEnvironment: false,
   spawnHook: (ctx) => ctx,
 });
 ```
 
-When disabled, TRPI removes inherited values for these variables so nested agent processes do not expose stale parent-session metadata.
+When disabled, Pi removes inherited values for these variables so nested Pi processes do not expose stale parent-session metadata.
 
-## TRPI process configuration
+## Pi Process Configuration
 
-These variables are read by TRPI itself:
+These variables are read by Pi itself:
 
 | Variable | Description |
 |----------|-------------|
-| `TRPI_CODING_AGENT_DIR` | Override the config directory; default is `~/.trpi/agent` |
-| `TRPI_CODING_AGENT_SESSION_DIR` | Override session storage; overridden by `--session-dir` |
-| `TRPI_PACKAGE_DIR` | Override the package directory, useful for Nix/Guix store paths |
-| `TRPI_OFFLINE` | Disable startup network operations, including model catalog and version checks |
-| `TRPI_SKIP_VERSION_CHECK` | Disable the Lore-Hex GitHub release version check |
-| `TRPI_LATEST_VERSION_URL` | Override the GitHub release metadata endpoint used by version checks |
-| `TRPI_MODEL_CATALOG_BASE_URL` | Opt into a compatible remote Pi model-catalog overlay; off by default |
-| `TRPI_SHARE_VIEWER_URL` | Override the viewer base URL returned by `/share`; direct private gist URLs are the default |
-| `PI_TELEMETRY` | Control optional provider attribution headers: `1`/`true`/`yes` or `0`/`false`/`no` |
+| `PI_CODING_AGENT_DIR` | Override the config directory; default is `~/.pi/agent` |
+| `PI_CODING_AGENT_SESSION_DIR` | Override session storage; overridden by `--session-dir` |
+| `PI_PACKAGE_DIR` | Override the package directory, useful for Nix/Guix store paths |
+| `PI_OFFLINE` | Disable startup network operations, including update checks, package updates, and install/update telemetry |
+| `TR_COWORK_SKIP_VERSION_CHECK` | Disable the GitHub release version check |
+| `PI_SKIP_VERSION_CHECK` | Compatibility alias for `TR_COWORK_SKIP_VERSION_CHECK` |
+| `PI_TELEMETRY` | Override install/update telemetry and provider attribution headers: `1`/`true`/`yes` or `0`/`false`/`no` |
 | `PI_CACHE_RETENTION` | Set to `long` for extended provider prompt caching where supported |
+| `PI_SHARE_VIEWER_URL` | Override the base URL used by `/share` |
 | `PI_HARDWARE_CURSOR` | Set to `1` to show the hardware cursor; see [Terminal setup](terminal-setup.md) |
+| `PI_HYPERLINKS` | Override OSC 8 hyperlink detection with `1`, `0`, or `auto` |
+| `PI_IMAGE_PROTOCOL` | Override inline image detection with `kitty`, `iterm2`, `none`, or `auto` |
+| `PI_TRUE_COLOR` | Override truecolor detection with `1`, `0`, or `auto` |
 | `PI_TUI_ESC_TIMEOUT` | How long to wait after a lone ESC before treating it as Escape, in milliseconds; defaults to `100` over SSH and `10` otherwise. Increase if Alt-key input is misread as Escape |
 | `VISUAL`, `EDITOR` | External editor fallback when `externalEditor` is unset |
 | `HTTP_PROXY`, `HTTPS_PROXY` | Proxy outbound HTTP requests |
-
-`PI_PACKAGE_DIR`, `PI_OFFLINE`, `PI_SKIP_VERSION_CHECK`, and `PI_SHARE_VIEWER_URL` remain accepted as legacy aliases. `PI_CODING_AGENT_DIR` and `PI_CODING_AGENT_SESSION_DIR` are not aliases; use the `TRPI_*` names so TRPI stays isolated from upstream Pi state.
 
 Provider credentials such as `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, and cloud-provider configuration are listed in [Providers](providers.md#environment-variables-or-auth-file).

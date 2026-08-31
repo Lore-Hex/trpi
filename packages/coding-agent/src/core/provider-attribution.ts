@@ -43,20 +43,20 @@ function getDefaultAttributionHeaders(
 
 	if (isOpenRouterModel(model)) {
 		return {
-			"X-OpenRouter-Title": "TRPI",
+			"X-OpenRouter-Title": "TR Confidential Cowork",
 			"X-OpenRouter-Categories": "cli-agent",
 		};
 	}
 
 	if (isNvidiaNimModel(model)) {
 		return {
-			"X-BILLING-INVOKE-ORIGIN": "TRPI",
+			"X-BILLING-INVOKE-ORIGIN": "TR Confidential Cowork",
 		};
 	}
 
 	if (isCloudflareModel(model)) {
 		return {
-			"User-Agent": "trpi-coding-agent",
+			"User-Agent": "tr-confidential-cowork",
 		};
 	}
 
@@ -72,7 +72,7 @@ function getSessionHeaders(model: Model<Api>, sessionId: string | undefined): Re
 	) {
 		return undefined;
 	}
-	return { "x-opencode-session": sessionId, "x-opencode-client": "trpi" };
+	return { "x-opencode-session": sessionId, "x-opencode-client": "tr-cowork" };
 }
 
 export function mergeProviderAttributionHeaders(

@@ -4,7 +4,7 @@ Delegate tasks to specialized subagents with isolated context windows.
 
 ## Features
 
-- **Isolated context**: Each subagent runs in a separate `trpi` process
+- **Isolated context**: Each subagent runs in a separate `tr-cowork` process
 - **Streaming output**: See tool calls and progress as they happen
 - **Parallel streaming**: All parallel tasks stream updates simultaneously
 - **Markdown rendering**: Final output rendered with proper formatting (expanded view)
@@ -35,30 +35,30 @@ From the repository root, symlink the files:
 
 ```bash
 # Symlink the extension (must be in a subdirectory with index.ts)
-mkdir -p ~/.trpi/agent/extensions/subagent
-ln -sf "$(pwd)/packages/coding-agent/examples/extensions/subagent/index.ts" ~/.trpi/agent/extensions/subagent/index.ts
-ln -sf "$(pwd)/packages/coding-agent/examples/extensions/subagent/agents.ts" ~/.trpi/agent/extensions/subagent/agents.ts
+mkdir -p ~/.tr-confidential-cowork/agent/extensions/subagent
+ln -sf "$(pwd)/packages/coding-agent/examples/extensions/subagent/index.ts" ~/.tr-confidential-cowork/agent/extensions/subagent/index.ts
+ln -sf "$(pwd)/packages/coding-agent/examples/extensions/subagent/agents.ts" ~/.tr-confidential-cowork/agent/extensions/subagent/agents.ts
 
 # Symlink agents
-mkdir -p ~/.trpi/agent/agents
+mkdir -p ~/.tr-confidential-cowork/agent/agents
 for f in packages/coding-agent/examples/extensions/subagent/agents/*.md; do
-  ln -sf "$(pwd)/$f" ~/.trpi/agent/agents/$(basename "$f")
+  ln -sf "$(pwd)/$f" ~/.tr-confidential-cowork/agent/agents/$(basename "$f")
 done
 
 # Symlink workflow prompts
-mkdir -p ~/.trpi/agent/prompts
+mkdir -p ~/.tr-confidential-cowork/agent/prompts
 for f in packages/coding-agent/examples/extensions/subagent/prompts/*.md; do
-  ln -sf "$(pwd)/$f" ~/.trpi/agent/prompts/$(basename "$f")
+  ln -sf "$(pwd)/$f" ~/.tr-confidential-cowork/agent/prompts/$(basename "$f")
 done
 ```
 
 ## Security Model
 
-This tool executes a separate `trpi` subprocess with a delegated system prompt and tool/model configuration.
+This tool executes a separate `tr-cowork` subprocess with a delegated system prompt and tool/model configuration.
 
-**Project-local agents** (`.trpi/agents/*.md`) are repo-controlled prompts that can instruct the model to read files, run bash commands, etc.
+**Project-local agents** (`.tr-confidential-cowork/agents/*.md`) are repo-controlled prompts that can instruct the model to read files, run bash commands, etc.
 
-**Default behavior:** Only loads **user-level agents** from `~/.trpi/agent/agents`.
+**Default behavior:** Only loads **user-level agents** from `~/.tr-confidential-cowork/agent/agents`.
 
 To enable project-local agents, pass `agentScope: "both"` (or `"project"`). Only do this for repositories you trust.
 
@@ -140,8 +140,8 @@ System prompt for the agent goes here.
 When `model` is omitted, the subagent inherits the dispatching session's active model and thinking level.
 
 **Locations:**
-- `~/.trpi/agent/agents/*.md` - User-level (always loaded)
-- `.trpi/agents/*.md` - Project-level (only with `agentScope: "project"` or `"both"`)
+- `~/.tr-confidential-cowork/agent/agents/*.md` - User-level (always loaded)
+- `.tr-confidential-cowork/agents/*.md` - Project-level (only with `agentScope: "project"` or `"both"`)
 
 Project agents override user agents with the same name when `agentScope: "both"`.
 

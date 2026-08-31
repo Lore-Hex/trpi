@@ -14,7 +14,7 @@ const packages = [
 	{ directory: "packages/client", name: "@earendil-works/pi-client" },
 	{ directory: "packages/session-backends/sqlite-node", name: "@earendil-works/pi-session-backend-sqlite-node" },
 	{ directory: "packages/server", name: "@earendil-works/pi-server" },
-	{ directory: "packages/coding-agent", name: "trpi-coding-agent" },
+	{ directory: "packages/coding-agent", name: "tr-confidential-cowork" },
 ];
 
 function printUsage() {
@@ -116,7 +116,7 @@ function isInsidePath(child, parent) {
 
 function prepareOutputDirectory(options, repoRoot) {
 	if (!options.outDir) {
-		return mkdtempSync(join(tmpdir(), "trpi-local-release-"));
+		return mkdtempSync(join(tmpdir(), "tr-cowork-local-release-"));
 	}
 
 	const outDir = resolve(options.outDir);
@@ -165,24 +165,24 @@ function buildBunBinaryRelease(targetDirectory, archiveDirectory) {
 	]);
 	rmSync(targetDirectory, { force: true, recursive: true });
 	cpSync(join(binaryBuildDirectory, platform), targetDirectory, { recursive: true });
-	const archiveName = platform.startsWith("windows-") ? `trpi-${platform}.zip` : `trpi-${platform}.tar.gz`;
+	const archiveName = platform.startsWith("windows-") ? `tr-cowork-${platform}.zip` : `tr-cowork-${platform}.tar.gz`;
 	cpSync(join(binaryBuildDirectory, archiveName), join(archiveDirectory, archiveName));
 	return platform;
 }
 
-function createTrpiShim(installDirectory) {
+function createTrCoworkShim(installDirectory) {
 	const binDirectory = join(installDirectory, "node_modules", ".bin");
 	if (process.platform === "win32") {
-		if (existsSync(join(binDirectory, "trpi.cmd"))) {
-			writeFileSync(join(installDirectory, "trpi.cmd"), '@ECHO off\r\n"%~dp0node_modules\\.bin\\trpi.cmd" %*\r\n');
-			writeFileSync(join(installDirectory, "trpi.ps1"), '& "$PSScriptRoot/node_modules/.bin/trpi.ps1" @args\n');
+		if (existsSync(join(binDirectory, "tr-cowork.cmd"))) {
+			writeFileSync(join(installDirectory, "tr-cowork.cmd"), '@ECHO off\r\n"%~dp0node_modules\\.bin\\tr-cowork.cmd" %*\r\n');
+			writeFileSync(join(installDirectory, "tr-cowork.ps1"), '& "$PSScriptRoot/node_modules/.bin/tr-cowork.ps1" @args\n');
 			return;
 		}
-		writeFileSync(join(installDirectory, "trpi.cmd"), '@ECHO off\r\n"%~dp0node_modules\\.bin\\trpi.exe" %*\r\n');
-		writeFileSync(join(installDirectory, "trpi.ps1"), '& "$PSScriptRoot/node_modules/.bin/trpi.exe" @args\n');
+		writeFileSync(join(installDirectory, "tr-cowork.cmd"), '@ECHO off\r\n"%~dp0node_modules\\.bin\\tr-cowork.exe" %*\r\n');
+		writeFileSync(join(installDirectory, "tr-cowork.ps1"), '& "$PSScriptRoot/node_modules/.bin/tr-cowork.exe" @args\n');
 		return;
 	}
-	symlinkSync(join("node_modules", ".bin", "trpi"), join(installDirectory, "trpi"));
+	symlinkSync(join("node_modules", ".bin", "tr-cowork"), join(installDirectory, "tr-cowork"));
 }
 
 function packPackage(pkg, tarballDirectory) {
@@ -205,7 +205,7 @@ const options = parseArgs();
 const repoRoot = process.cwd();
 const rootPackageJson = readPackageJson(repoRoot);
 
-if (rootPackageJson.name !== "trpi-monorepo") {
+if (rootPackageJson.name !== "tr-confidential-cowork-monorepo") {
 	throw new Error("Run this script from the repository root");
 }
 
@@ -251,7 +251,7 @@ if (!options.skipInstall) {
 	writeFileSync(join(nodeInstallDirectory, "package.json"), installPackageJson);
 
 	run("npm", ["install", "--omit=dev", "--ignore-scripts"], { cwd: nodeInstallDirectory });
-	createTrpiShim(nodeInstallDirectory);
+	createTrCoworkShim(nodeInstallDirectory);
 
 	if (!options.skipBunInstall) {
 		if (!commandExists("bun")) {
@@ -263,7 +263,7 @@ if (!options.skipInstall) {
 		);
 		writeFileSync(join(bunInstallDirectory, "package.json"), `${JSON.stringify({ private: true, dependencies: bunDependencies, overrides: bunDependencies }, undefined, "\t")}\n`);
 		run("bun", ["install", "--production", "--ignore-scripts"], { cwd: bunInstallDirectory });
-		createTrpiShim(bunInstallDirectory);
+		createTrCoworkShim(bunInstallDirectory);
 	}
 }
 
@@ -277,19 +277,19 @@ for (const tarball of tarballs.values()) {
 if (!options.skipInstall) {
 	console.log("\nLocal Bun binary release:");
 	console.log(`  ${binaryDirectory}`);
-	console.log(`  ${join(outDir, `trpi-${binaryPlatform}.${String(binaryPlatform).startsWith("windows-") ? "zip" : "tar.gz"}`)}`);
+	console.log(`  ${join(outDir, `tr-cowork-${binaryPlatform}.${String(binaryPlatform).startsWith("windows-") ? "zip" : "tar.gz"}`)}`);
 	console.log("\nRun the local Bun binary release from outside the repository:");
-	console.log(`  ${join(binaryDirectory, String(binaryPlatform).startsWith("windows-") ? "trpi.exe" : "trpi")} --help`);
+	console.log(`  ${join(binaryDirectory, String(binaryPlatform).startsWith("windows-") ? "tr-cowork.exe" : "tr-cowork")} --help`);
 
 	console.log("\nIsolated npm install:");
 	console.log(`  ${nodeInstallDirectory}`);
 	console.log("\nRun the locally packed npm CLI from outside the repository:");
-	console.log(`  ${join(nodeInstallDirectory, process.platform === "win32" ? "trpi.cmd" : "trpi")} --help`);
+	console.log(`  ${join(nodeInstallDirectory, process.platform === "win32" ? "tr-cowork.cmd" : "tr-cowork")} --help`);
 
 	if (!options.skipBunInstall) {
 		console.log("\nIsolated Bun package install:");
 		console.log(`  ${bunInstallDirectory}`);
 		console.log("\nRun the locally packed Bun package CLI from outside the repository:");
-		console.log(`  ${join(bunInstallDirectory, process.platform === "win32" ? "trpi.cmd" : "trpi")} --help`);
+		console.log(`  ${join(bunInstallDirectory, process.platform === "win32" ? "tr-cowork.cmd" : "tr-cowork")} --help`);
 	}
 }

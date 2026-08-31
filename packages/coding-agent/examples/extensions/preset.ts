@@ -6,8 +6,8 @@
  * and can be activated via CLI flag, /preset command, or Ctrl+Shift+U to cycle.
  *
  * Config files (merged, project takes precedence):
- * - ~/.trpi/agent/presets.json (global)
- * - <cwd>/.trpi/presets.json (project-local)
+ * - ~/.tr-confidential-cowork/agent/presets.json (global)
+ * - <cwd>/.tr-confidential-cowork/presets.json (project-local)
  *
  * Example presets.json:
  * ```json
@@ -30,7 +30,7 @@
  * ```
  *
  * Usage:
- * - `trpi --preset plan` - start with plan preset
+ * - `tr-cowork --preset plan` - start with plan preset
  * - `/preset` - show selector to switch presets mid-session
  * - `/preset implement` - switch to implement preset directly
  * - `Ctrl+Shift+U` - cycle through presets

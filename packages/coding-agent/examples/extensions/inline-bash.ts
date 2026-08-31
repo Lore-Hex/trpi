@@ -1,8 +1,8 @@
 /**
  * Inline Bash Extension - expands inline bash commands in user prompts.
  *
- * Start TRPI with this extension:
- *   trpi -e ./examples/extensions/inline-bash.ts
+ * Start TR Confidential Cowork with this extension:
+ *   tr-cowork -e ./examples/extensions/inline-bash.ts
  *
  * Then type prompts with inline bash:
  *   What's in !{pwd}?

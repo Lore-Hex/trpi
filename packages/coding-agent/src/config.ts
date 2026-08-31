@@ -4,6 +4,7 @@ import { basename, dirname, join, resolve, sep, win32 } from "path";
 import { fileURLToPath } from "url";
 import { spawnProcessSync } from "./utils/child-process.ts";
 import { normalizePath } from "./utils/paths.ts";
+import { stripBom } from "./utils/text.ts";
 
 // =============================================================================
 // Package Detection
@@ -361,12 +362,29 @@ export function getUpdateInstruction(packageName: string): string {
 /**
  * Get the base directory for resolving package assets (themes, package.json, README.md, CHANGELOG.md).
  * - For Bun binary: returns the directory containing the executable
- * - For Node.js (dist/): returns __dirname (the dist/ directory)
- * - For tsx (src/): returns parent directory (the package root)
+ * - For Node.js and tsx: returns the package root containing package.json
+ * - Ignores Bun binary metadata copied into dist/ when the package root is available
  */
+export function findNodePackageDir(startDir: string): string {
+	let dir = startDir;
+	while (dir !== dirname(dir)) {
+		if (existsSync(join(dir, "package.json"))) {
+			const parent = dirname(dir);
+			// build:binary places Bun's metadata inside dist/. Node still needs the
+			// package root so its dist-relative asset paths do not become dist/dist/.
+			if (basename(dir) === "dist" && existsSync(join(parent, "package.json"))) {
+				return parent;
+			}
+			return dir;
+		}
+		dir = dirname(dir);
+	}
+	return startDir;
+}
+
 export function getPackageDir(): string {
 	// Allow override via environment variable (useful for Nix/Guix where store paths tokenize poorly)
-	const envDir = process.env.TRPI_PACKAGE_DIR ?? process.env.PI_PACKAGE_DIR;
+	const envDir = process.env.TR_COWORK_PACKAGE_DIR ?? process.env.PI_PACKAGE_DIR;
 	if (envDir) {
 		return normalizePath(envDir);
 	}
@@ -375,16 +393,7 @@ export function getPackageDir(): string {
 		// Bun binary: process.execPath points to the compiled executable
 		return dirname(process.execPath);
 	}
-	// Node.js: walk up from __dirname until we find package.json
-	let dir = __dirname;
-	while (dir !== dirname(dir)) {
-		if (existsSync(join(dir, "package.json"))) {
-			return dir;
-		}
-		dir = dirname(dir);
-	}
-	// Fallback (shouldn't happen)
-	return __dirname;
+	return findNodePackageDir(__dirname);
 }
 
 /**
@@ -472,44 +481,46 @@ interface PackageJson {
 	version?: string;
 	piConfig?: {
 		name?: string;
+		displayName?: string;
 		configDir?: string;
 	};
 }
 
 let pkg: PackageJson = {};
 try {
-	pkg = JSON.parse(readFileSync(getPackageJsonPath(), "utf-8")) as PackageJson;
+	pkg = JSON.parse(stripBom(readFileSync(getPackageJsonPath(), "utf-8"))) as PackageJson;
 } catch (e: unknown) {
 	const err = e as NodeJS.ErrnoException;
 	if (err.code !== "ENOENT") throw e;
 }
 
 const piConfigName: string | undefined = pkg.piConfig?.name;
-export const PACKAGE_NAME: string = pkg.name || "trpi-coding-agent";
-export const APP_NAME: string = piConfigName || "trpi";
-export const APP_TITLE: string = piConfigName ? APP_NAME : "π";
-export const CONFIG_DIR_NAME: string = pkg.piConfig?.configDir || ".trpi";
+export const PACKAGE_NAME: string = pkg.name || "tr-confidential-cowork";
+export const APP_NAME: string = piConfigName || "tr-cowork";
+export const APP_TITLE: string = pkg.piConfig?.displayName || (piConfigName ? APP_NAME : "π");
+export const CONFIG_DIR_NAME: string = pkg.piConfig?.configDir || ".tr-confidential-cowork";
 export const VERSION: string = pkg.version || "0.0.0";
 
-// e.g., TRPI_CODING_AGENT_DIR or TAU_CODING_AGENT_DIR
-export const ENV_AGENT_DIR = `${APP_NAME.toUpperCase()}_CODING_AGENT_DIR`;
-export const ENV_SESSION_DIR = `${APP_NAME.toUpperCase()}_CODING_AGENT_SESSION_DIR`;
+// e.g., TR_COWORK_CODING_AGENT_DIR or TAU_CODING_AGENT_DIR
+const ENV_PREFIX = APP_NAME.toUpperCase().replace(/[^A-Z0-9]+/g, "_");
+export const ENV_AGENT_DIR = `${ENV_PREFIX}_CODING_AGENT_DIR`;
+export const ENV_SESSION_DIR = `${ENV_PREFIX}_CODING_AGENT_SESSION_DIR`;
 
 export function expandTildePath(path: string): string {
 	return normalizePath(path);
 }
 
-/** Get the share viewer URL for a gist ID */
+/** Get the share viewer URL for a gist ID. */
 export function getShareViewerUrl(gistId: string): string {
-	const baseUrl = process.env.TRPI_SHARE_VIEWER_URL ?? process.env.PI_SHARE_VIEWER_URL;
+	const baseUrl = process.env.TR_COWORK_SHARE_VIEWER_URL ?? process.env.PI_SHARE_VIEWER_URL;
 	return baseUrl ? `${baseUrl}#${gistId}` : `https://gist.github.com/${gistId}`;
 }
 
 // =============================================================================
-// User Config Paths (~/.trpi/agent/*)
+// User Config Paths (~/.tr-confidential-cowork/agent/*)
 // =============================================================================
 
-/** Get the agent config directory (e.g., ~/.trpi/agent/) */
+/** Get the agent config directory (e.g., ~/.tr-confidential-cowork/agent/) */
 export function getAgentDir(): string {
 	const envDir = process.env[ENV_AGENT_DIR];
 	if (envDir) {

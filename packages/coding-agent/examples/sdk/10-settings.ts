@@ -4,7 +4,7 @@
  * Override settings using SettingsManager.
  */
 
-import { createAgentSession, SessionManager, SettingsManager } from "trpi-coding-agent";
+import { createAgentSession, SessionManager, SettingsManager } from "tr-confidential-cowork";
 
 const cwd = process.cwd();
 

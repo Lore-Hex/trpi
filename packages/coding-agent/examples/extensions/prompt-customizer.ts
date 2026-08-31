@@ -8,7 +8,7 @@
  * are currently active, respecting whatever the user has configured.
  *
  * Usage:
- * 1. Copy this file to ~/.trpi/agent/extensions/ or your project's .trpi/extensions/
+ * 1. Copy this file to ~/.tr-confidential-cowork/agent/extensions/ or your project's .tr-confidential-cowork/extensions/
  * 2. Use the extension — it automatically adapts to your active tools and skills
  */
 

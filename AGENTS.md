@@ -35,7 +35,7 @@
   - `packages/tui` (`node:test`): `node --test test/specific.test.ts`
 - If you create or modify a test file, run it and iterate on test or implementation until it passes.
 - For `packages/coding-agent/test/suite/`, use `test/suite/harness.ts` + the faux provider. No real provider APIs, keys, or paid tokens.
-- Put issue-specific regressions under `packages/coding-agent/test/suite/regressions/` named `<issue-number>-<short-slug>.test.ts`.
+- When regressions tests for fixing a github issue, add a comment with the github issue number next to the test.
 - For ad-hoc scripts, `write` them to a temp file (e.g. `/tmp`), run, edit if needed, remove when done. Don't embed multi-line scripts in `bash` commands.
 - Never commit unless the user asks.
 
@@ -50,7 +50,7 @@
 
 ## Git
 
-Multiple TRPI sessions may be running in this cwd at the same time, each modifying different files. Git operations that touch unstaged, staged, or untracked files outside your own changes will stomp on other sessions' work. Follow these rules:
+Multiple TR Confidential Cowork sessions may be running in this cwd at the same time, each modifying different files. Git operations that touch unstaged, staged, or untracked files outside your own changes will stomp on other sessions' work. Follow these rules:
 
 Committing:
 
@@ -94,7 +94,7 @@ When closing issues via commit:
 
 - Include `fixes #<number>` or `closes #<number>` in the message so merging auto-closes the issue. For multiple issues, repeat the keyword per issue (`closes #1, closes #2`); a shared keyword (`closes #1, #2`) only closes the first.
 
-## Testing TRPI Interactive Mode with tmux
+## Testing TR Confidential Cowork Interactive Mode with tmux
 
 Run the TUI in a controlled terminal (from the repo root):
 
@@ -132,24 +132,24 @@ Attribution:
 
 2. **Local smoke test**: build an unpublished release and smoke test from outside the repo (so it can't resolve workspace files):
    ```bash
-   npm run release:local -- --out /tmp/trpi-local-release --force
+   npm run release:local -- --out /tmp/tr-cowork-local-release --force
    cd /tmp
 
    # Node package install smoke tests
-   /tmp/trpi-local-release/node/trpi --help
-   /tmp/trpi-local-release/node/trpi --version
-   /tmp/trpi-local-release/node/trpi --list-models trustedrouter
-   /tmp/trpi-local-release/node/trpi -p "Say exactly: ok"
-   /tmp/trpi-local-release/node/trpi
+   /tmp/tr-cowork-local-release/node/tr-cowork --help
+   /tmp/tr-cowork-local-release/node/tr-cowork --version
+   /tmp/tr-cowork-local-release/node/tr-cowork --list-models trustedrouter
+   /tmp/tr-cowork-local-release/node/tr-cowork -p "Say exactly: ok"
+   /tmp/tr-cowork-local-release/node/tr-cowork
 
    # Bun binary smoke tests
-   /tmp/trpi-local-release/bun/trpi --help
-   /tmp/trpi-local-release/bun/trpi --version
-   /tmp/trpi-local-release/bun/trpi --list-models trustedrouter
-   /tmp/trpi-local-release/bun/trpi -p "Say exactly: ok"
-   /tmp/trpi-local-release/bun/trpi
+   /tmp/tr-cowork-local-release/bun/tr-cowork --help
+   /tmp/tr-cowork-local-release/bun/tr-cowork --version
+   /tmp/tr-cowork-local-release/bun/tr-cowork --list-models trustedrouter
+   /tmp/tr-cowork-local-release/bun/tr-cowork -p "Say exactly: ok"
+   /tmp/tr-cowork-local-release/bun/tr-cowork
    ```
-   Verify both Node and Bun startup, model/account listing, interactive startup, and at least one real prompt with TrustedRouter. The bare commands `/tmp/trpi-local-release/node/trpi` and `/tmp/trpi-local-release/bun/trpi` start interactive mode; run each in tmux, submit a prompt, and wait for the model reply before considering the interactive smoke test passed. Failures are release blockers unless the user explicitly accepts the risk.
+   Verify both Node and Bun startup, model/account listing, interactive startup, and at least one real prompt with TrustedRouter. The bare commands `/tmp/tr-cowork-local-release/node/tr-cowork` and `/tmp/tr-cowork-local-release/bun/tr-cowork` start interactive mode; run each in tmux, submit a prompt, and wait for the model reply before considering the interactive smoke test passed. Failures are release blockers unless the user explicitly accepts the risk.
 
 3. **Run the release script**:
    ```bash

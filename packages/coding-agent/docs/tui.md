@@ -1,4 +1,4 @@
-> TRPI can create TUI components. Ask it to build one for your use case.
+> TR Confidential Cowork can create TUI components. Ask it to build one for your use case.
 
 # TUI Components
 
@@ -761,7 +761,7 @@ ctx.ui.setStatus("my-ext", undefined);
 
 ### Pattern 4b: Working Indicator Customization
 
-Customize the inline working indicator shown while TRPI is streaming a response.
+Customize the inline working indicator shown while TR Confidential Cowork is streaming a response.
 
 ```typescript
 // Static indicator
@@ -781,7 +781,7 @@ ctx.ui.setWorkingIndicator({
 // Hide the indicator entirely
 ctx.ui.setWorkingIndicator({ frames: [] });
 
-// Restore TRPI's default spinner
+// Restore TR Confidential Cowork's default spinner
 ctx.ui.setWorkingIndicator();
 ```
 

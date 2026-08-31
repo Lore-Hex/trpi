@@ -13,10 +13,10 @@
  *   cd packages/coding-agent/examples/extensions/custom-provider-anthropic && npm install
  *
  *   # With OAuth (run /login custom-anthropic first)
- *   trpi -e ./packages/coding-agent/examples/extensions/custom-provider-anthropic
+ *   tr-cowork -e ./packages/coding-agent/examples/extensions/custom-provider-anthropic
  *
  *   # With API key
- *   CUSTOM_ANTHROPIC_API_KEY=sk-ant-... trpi -e ./packages/coding-agent/examples/extensions/custom-provider-anthropic
+ *   CUSTOM_ANTHROPIC_API_KEY=sk-ant-... tr-cowork -e ./packages/coding-agent/examples/extensions/custom-provider-anthropic
  *
  * Then use /model to select custom-anthropic/claude-sonnet-4-5
  */

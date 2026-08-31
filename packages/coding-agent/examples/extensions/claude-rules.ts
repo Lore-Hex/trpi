@@ -12,7 +12,7 @@
  * - Organize with subdirectories: Group related rules (e.g., frontend/, backend/)
  *
  * Usage:
- * 1. Copy this file to ~/.trpi/agent/extensions/ or your project's .trpi/extensions/
+ * 1. Copy this file to ~/.tr-confidential-cowork/agent/extensions/ or your project's .tr-confidential-cowork/extensions/
  * 2. Create .claude/rules/ folder in your project root
  * 3. Add .md files with your rules
  */

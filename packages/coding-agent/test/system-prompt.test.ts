@@ -46,17 +46,33 @@ describe("buildSystemPrompt", () => {
 			expect(prompt).toContain("- write:");
 		});
 
-		test("identifies TRPI and resolves its docs and examples under absolute base paths", () => {
+		test.each([
+			[["powershell"], "Use PowerShell for file operations"],
+			[["bash", "powershell"], "Use bash or PowerShell for file operations"],
+		] as const)("uses shell-specific guidance for %j", (selectedTools, expected) => {
+			const prompt = buildSystemPrompt({
+				selectedTools: [...selectedTools],
+				contextFiles: [],
+				skills: [],
+				cwd: process.cwd(),
+			});
+
+			expect(prompt).toContain(expected);
+		});
+
+		test("identifies the product and resolves its docs and examples under absolute base paths", () => {
 			const prompt = buildSystemPrompt({
 				contextFiles: [],
 				skills: [],
 				cwd: process.cwd(),
 			});
 
-			expect(prompt).toContain("inside TRPI, a TrustedRouter-first fork of the Pi coding agent harness");
-			expect(prompt).toContain("TRPI documentation");
 			expect(prompt).toContain(
-				"- When reading TRPI docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory",
+				"inside TR Confidential Cowork, a TrustedRouter-first fork of the Pi coding agent harness",
+			);
+			expect(prompt).toContain("TR Confidential Cowork documentation");
+			expect(prompt).toContain(
+				"- When reading TR Confidential Cowork docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory",
 			);
 			expect(prompt).toContain("environment variables (docs/environment-variables.md)");
 			expect(prompt).not.toContain("operating inside pi");

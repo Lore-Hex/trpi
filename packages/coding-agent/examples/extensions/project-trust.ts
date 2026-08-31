@@ -3,14 +3,14 @@
  *
  * Demonstrates the project_trust event. Install globally or pass via -e:
  *
- *   mkdir -p ~/.trpi/agent/extensions
- *   cp packages/coding-agent/examples/extensions/project-trust.ts ~/.trpi/agent/extensions/
+ *   mkdir -p ~/.tr-confidential-cowork/agent/extensions
+ *   cp packages/coding-agent/examples/extensions/project-trust.ts ~/.tr-confidential-cowork/agent/extensions/
  *
  * Or:
  *
- *   trpi -e packages/coding-agent/examples/extensions/project-trust.ts
+ *   tr-cowork -e packages/coding-agent/examples/extensions/project-trust.ts
  *
- * Try it in a project containing .trpi, AGENTS.md/CLAUDE.md, or .agents/skills.
+ * Try it in a project containing .tr-confidential-cowork, AGENTS.md/CLAUDE.md, or .agents/skills.
  */
 
 import type { ExtensionAPI, ProjectTrustEventResult } from "@earendil-works/pi-coding-agent";

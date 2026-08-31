@@ -42,7 +42,7 @@ describe("version checks", () => {
 		await expect(checkForNewPiVersion("1.2.2")).resolves.toEqual({ version: "1.2.3" });
 	});
 
-	it("uses GitHub Releases with a TRPI user agent", async () => {
+	it("uses GitHub Releases with a TR Confidential Cowork user agent", async () => {
 		const fetchMock = vi.fn(async () => Response.json({ tag_name: "v1.2.4" }));
 		vi.stubGlobal("fetch", fetchMock);
 
@@ -51,7 +51,7 @@ describe("version checks", () => {
 			"https://api.github.com/repos/Lore-Hex/trpi/releases/latest",
 			expect.objectContaining({
 				headers: expect.objectContaining({
-					"User-Agent": expect.stringMatching(/^trpi\/1\.2\.3 /),
+					"User-Agent": expect.stringMatching(/^tr-cowork\/1\.2\.3 /),
 					accept: "application/json",
 				}),
 			}),
