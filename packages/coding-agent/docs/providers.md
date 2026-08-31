@@ -26,7 +26,7 @@ tr-cowork
 
 TrustedRouter is registered as provider `trustedrouter`. Inference uses the OpenAI Chat Completions-compatible endpoint at `https://api.trustedrouter.com/v1`; the model selector refreshes the public catalog from `https://trustedrouter.com/v1/models` and retains a cached copy for offline startup.
 
-TR Confidential Cowork defaults to the explicit, tool-tested route `trustedrouter/openai/gpt-5.4-mini`. Select another route with `/model`, Ctrl+L, or the CLI:
+TR Confidential Cowork defaults to `trustedrouter/confidential`. Every TrustedRouter model request sets `provider.data_collection=deny` and the hard `provider.min_privacy=confidential` floor. Select another TrustedRouter model with `/model`, Ctrl+L, or the CLI without weakening that floor:
 
 ```bash
 tr-cowork --list-models trustedrouter

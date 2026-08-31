@@ -27,6 +27,18 @@ vi.mock("@earendil-works/pi-ai/providers/all", () => ({
 
 const trustedRouterModels: Model<"openai-completions">[] = [
 	{
+		id: "trustedrouter/confidential",
+		name: "TrustedRouter Confidential",
+		api: "openai-completions",
+		provider: "trustedrouter",
+		baseUrl: "https://api.trustedrouter.com/v1",
+		reasoning: false,
+		input: ["text"],
+		cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+		contextWindow: 200_000,
+		maxTokens: 16_384,
+	},
+	{
 		id: "trustedrouter/auto",
 		name: "TrustedRouter Auto",
 		api: "openai-completions",
@@ -119,6 +131,7 @@ describe("TrustedRouter model selection", () => {
 			"anthropic",
 			"trustedrouter",
 			"trustedrouter",
+			"trustedrouter",
 		]);
 
 		const result = await findInitialModel({
@@ -129,7 +142,7 @@ describe("TrustedRouter model selection", () => {
 
 		expect(result.model).toMatchObject({
 			provider: "trustedrouter",
-			id: "openai/gpt-5.4-mini",
+			id: "trustedrouter/confidential",
 		});
 	});
 

@@ -34,7 +34,7 @@ tr-cowork
 
 `TR_API_KEY` is also accepted as a short alias. You can instead use `/login` and choose TrustedRouter to store an API key in `~/.tr-confidential-cowork/agent/auth.json`.
 
-TR Confidential Cowork defaults to `trustedrouter/openai/gpt-5.4-mini`, an explicit route verified with coding tool calls. Use `/model` or Ctrl+L to search the live TrustedRouter catalog. `trustedrouter/auto` remains selectable for chat, but it is not coding-safe until automatic routing filters tool-bearing requests to tool-capable models.
+TR Confidential Cowork defaults to `trustedrouter/confidential`. Every TrustedRouter request also sets `provider.data_collection=deny` and `provider.min_privacy=confidential`, so the router fails closed when no confidential endpoint is eligible. Use `/model` or Ctrl+L to search the live TrustedRouter catalog without weakening that privacy floor.
 
 Other Pi providers remain available as fallbacks through subscription login or their normal API-key environment variables. See [Providers](providers.md).
 
