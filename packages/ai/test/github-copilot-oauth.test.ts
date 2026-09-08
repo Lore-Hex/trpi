@@ -4,6 +4,27 @@ import { githubCopilotOAuth } from "../src/auth/oauth/github-copilot.ts";
 import { createModels } from "../src/models.ts";
 import { githubCopilotProvider } from "../src/providers/github-copilot.ts";
 
+// OAuth policy tests must not depend on today's generated provider catalog.
+vi.mock("../src/providers/github-copilot.models.ts", () => ({
+	GITHUB_COPILOT_MODELS: Object.fromEntries(
+		["gpt-4.1", "claude-sonnet-4.5", "gpt-5.4"].map((id) => [
+			id,
+			{
+				id,
+				name: id,
+				provider: "github-copilot",
+				api: "openai-completions",
+				baseUrl: "https://api.individual.githubcopilot.com",
+				reasoning: false,
+				input: ["text"],
+				cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+				contextWindow: 128000,
+				maxTokens: 4096,
+			},
+		]),
+	),
+}));
+
 const neverAbortedSignal = new AbortController().signal;
 
 const testCopilotAccessToken = "tid=test;exp=9999999999;proxy-ep=proxy.individual.githubcopilot.com;";
