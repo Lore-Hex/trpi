@@ -11,7 +11,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 			guard let resourcesURL = Bundle.main.resourceURL else {
 				throw CocoaError(.fileNoSuchFile)
 			}
-			let executableURL = resourcesURL.appendingPathComponent("bin/tr-cowork")
+			let executableURL = resourcesURL.appendingPathComponent("tr-cowork")
 			guard FileManager.default.isExecutableFile(atPath: executableURL.path) else {
 				throw CocoaError(.fileNoSuchFile)
 			}
