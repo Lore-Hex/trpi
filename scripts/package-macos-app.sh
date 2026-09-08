@@ -60,14 +60,14 @@ echo "==> Building Intel runtime"
 	--platform darwin-x64 \
 	--out "$X64_RELEASE"
 
-mkdir -p "$APP_MACOS" "$APP_RESOURCES/bin"
+mkdir -p "$APP_MACOS" "$APP_RESOURCES"
 
 echo "==> Assembling universal CLI"
 lipo -create \
 	"$ARM_RELEASE/darwin-arm64/tr-cowork" \
 	"$X64_RELEASE/darwin-x64/tr-cowork" \
-	-output "$APP_RESOURCES/bin/tr-cowork"
-chmod 755 "$APP_RESOURCES/bin/tr-cowork"
+	-output "$APP_RESOURCES/tr-cowork"
+chmod 755 "$APP_RESOURCES/tr-cowork"
 
 for resource in package.json README.md CHANGELOG.md LICENSE photon_rs_bg.wasm theme assets export-html docs examples node_modules native; do
 	if [[ -e "$ARM_RELEASE/darwin-arm64/$resource" ]]; then
@@ -130,10 +130,19 @@ iconutil -c icns "$ICONSET" -o "$APP_RESOURCES/AppIcon.icns"
 echo "==> Signing nested code and app"
 while IFS= read -r code_path; do
 	codesign --force --timestamp --options runtime --sign "$SIGN_IDENTITY" "$code_path"
-done < <(find "$APP_RESOURCES" -type f \( -name '*.node' -o -name 'tr-cowork' \) -print | sort)
+done < <(find "$APP_RESOURCES" -type f -name '*.node' -print | sort)
+codesign --force --timestamp --options runtime --entitlements "$ROOT_DIR/scripts/macos/runtime-entitlements.plist" \
+	--sign "$SIGN_IDENTITY" "$APP_RESOURCES/tr-cowork"
 codesign --force --timestamp --options runtime --sign "$SIGN_IDENTITY" "$APP_MACOS/$APP_NAME"
 codesign --force --timestamp --options runtime --sign "$SIGN_IDENTITY" "$APP_BUNDLE"
 codesign --verify --deep --strict --verbose=2 "$APP_BUNDLE"
+
+echo "==> Verifying signed runtime startup outside the checkout"
+(
+	cd "$WORK_DIR"
+	"$APP_RESOURCES/tr-cowork" --version
+	"$APP_RESOURCES/tr-cowork" --help
+)
 
 echo "==> Notarizing app"
 ditto -c -k --keepParent "$APP_BUNDLE" "$ZIP_PATH"
@@ -146,7 +155,11 @@ xcrun stapler staple "$APP_BUNDLE"
 xcrun stapler validate "$APP_BUNDLE"
 
 echo "==> Creating, signing, and notarizing DMG"
-hdiutil create -quiet -fs HFS+ -volname "$APP_NAME" -srcfolder "$APP_BUNDLE" "$DMG_PATH"
+DMG_ROOT="$WORK_DIR/dmg"
+mkdir -p "$DMG_ROOT"
+ditto "$APP_BUNDLE" "$DMG_ROOT/$APP_NAME.app"
+ln -s /Applications "$DMG_ROOT/Applications"
+hdiutil create -quiet -fs HFS+ -volname "$APP_NAME" -srcfolder "$DMG_ROOT" "$DMG_PATH"
 codesign --force --timestamp --sign "$SIGN_IDENTITY" "$DMG_PATH"
 xcrun notarytool submit "$DMG_PATH" \
 	--key "$NOTARY_KEY_PATH" \
