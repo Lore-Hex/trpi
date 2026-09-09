@@ -11,6 +11,7 @@ const CONFIDENTIAL_ROUTING = {
 	provider: {
 		data_collection: "deny",
 		min_privacy: "confidential",
+		require_parameters: true,
 	},
 } as const;
 
