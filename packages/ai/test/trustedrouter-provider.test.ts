@@ -1,3 +1,4 @@
+import { Type } from "typebox";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { AuthContext } from "../src/auth/types.ts";
 import { findEnvKeys, getEnvApiKey } from "../src/env-api-keys.ts";
@@ -90,7 +91,7 @@ describe("TrustedRouter provider", () => {
 		});
 		expect(provider.getModels().every((model) => model.samplingParams?.provider)).toBe(true);
 		expect(provider.getModels()[0]?.samplingParams).toEqual({
-			provider: { data_collection: "deny", min_privacy: "confidential" },
+			provider: { data_collection: "deny", min_privacy: "confidential", require_parameters: true },
 		});
 	});
 
@@ -169,7 +170,7 @@ describe("TrustedRouter provider", () => {
 			contextWindow: 131_072,
 			maxTokens: 32_768,
 			samplingParams: {
-				provider: { data_collection: "deny", min_privacy: "confidential" },
+				provider: { data_collection: "deny", min_privacy: "confidential", require_parameters: true },
 			},
 		});
 		expect(selected?.cost.input).toBeCloseTo(2);
@@ -243,12 +244,72 @@ describe("TrustedRouter provider", () => {
 			provider: {
 				data_collection: "deny",
 				min_privacy: "confidential",
+				require_parameters: true,
 			},
 		});
+		expect(wirePayload).toMatchObject({ provider: { require_parameters: true } });
 		expect(wirePayload).not.toHaveProperty("reasoning");
 		expect(wirePayload).not.toHaveProperty("store");
 		expect(wirePayload).not.toHaveProperty("max_completion_tokens");
 		expect(wirePayload).not.toHaveProperty("prompt_cache_key");
 		expect(wirePayload).not.toHaveProperty("prompt_cache_retention");
+	});
+
+	it("requires capable confidential routes and preserves completed tool results on the wire", async () => {
+		let wirePayload: unknown;
+		const request = vi.fn<FetchFunction>(async (_input, init) => {
+			wirePayload = JSON.parse(String(init?.body));
+			return streamResponse();
+		});
+		const provider = trustedrouterProvider();
+		const model = provider.getModels()[0];
+		if (!model) throw new Error("Missing confidential model");
+		await provider
+			.streamSimple(
+				model,
+				{
+					messages: [
+						{ role: "user", content: "Read proof.txt", timestamp: 1 },
+						{
+							role: "assistant",
+							api: model.api,
+							provider: model.provider,
+							model: model.id,
+							content: [{ type: "toolCall", id: "call_read", name: "read", arguments: { path: "proof.txt" } }],
+							stopReason: "toolUse",
+							timestamp: 2,
+							usage: {
+								input: 1,
+								output: 1,
+								cacheRead: 0,
+								cacheWrite: 0,
+								totalTokens: 2,
+								cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 },
+							},
+						},
+						{
+							role: "toolResult",
+							toolCallId: "call_read",
+							toolName: "read",
+							content: [{ type: "text", text: "nonempty proof" }],
+							isError: false,
+							timestamp: 3,
+						},
+					],
+					tools: [{ name: "read", description: "Read a file", parameters: Type.Object({ path: Type.String() }) }],
+				},
+				{ apiKey: "test-key", fetch: request, maxRetries: 0 },
+			)
+			.result();
+		expect(wirePayload).toMatchObject({
+			model: TRUSTEDROUTER_CODING_MODEL_ID,
+			provider: { data_collection: "deny", min_privacy: "confidential", require_parameters: true },
+			messages: [
+				{ role: "user", content: "Read proof.txt" },
+				{ role: "assistant", tool_calls: [{ id: "call_read", function: { name: "read" } }] },
+				{ role: "tool", tool_call_id: "call_read", content: "nonempty proof" },
+			],
+			tools: [{ type: "function", function: { name: "read" } }],
+		});
 	});
 });
