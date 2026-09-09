@@ -30,7 +30,7 @@ tr-cowork --provider trustedrouter --model <model-id>
 
 TrustedRouter uses `TRUSTEDROUTER_API_KEY`; `TR_API_KEY` is also accepted as a short compatibility alias. Its inference API is `https://api.trustedrouter.com/v1` and its public model catalog is `https://trustedrouter.com/v1/models`.
 
-The default TrustedRouter coding model is `openai/gpt-5.4-mini`, which has been verified with TR Confidential Cowork's tool loop. `trustedrouter/auto` remains available for chat and explicit selection, but it is not coding-safe until TrustedRouter's automatic routing is capability-aware: it can currently route tool-bearing requests to models without tool support. TR Confidential Cowork also omits OpenRouter-style reasoning controls from TrustedRouter requests because some routed upstreams reject them.
+The default TrustedRouter coding model is `trustedrouter/confidential`. TrustedRouter requests require confidential provider routing, deny data collection, and require support for the requested parameters. Named models use the same routing constraints rather than falling back to a non-confidential provider. Reasoning controls are omitted because some routed upstreams reject them.
 
 ## Configuration
 
@@ -76,7 +76,7 @@ To build a standalone executable:
 npm --prefix packages/coding-agent run build:binary
 ```
 
-The executable is written to `packages/coding-agent/dist/tr-cowork`.
+The archive includes release model data and native prebuilds. `--offline-model-data` uses that model data without refreshing provider catalogs. The script installs dependencies and builds the executable with its runtime assets; pass `--skip-install` if dependencies are already provided.
 
 ## Upstream and license
 

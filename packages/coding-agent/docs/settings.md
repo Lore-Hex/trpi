@@ -32,7 +32,7 @@ Use `/trust` in interactive mode to save a project trust decision for future ses
 | `defaultThinkingLevel` | string | - | Startup thinking level (saved with Ctrl+S in `/thinking`, or edited manually): `"off"`, `"minimal"`, `"low"`, `"medium"`, `"high"`, `"xhigh"`, `"max"` |
 | `modelThinkingLevels` | object | - | Per-model startup thinking levels keyed by `"provider/modelId"`; configure from `/settings` → Default thinking level per model or edit manually |
 | `hideThinkingBlock` | boolean | `false` | Hide thinking blocks in output |
-| `showCacheMissNotices` | boolean | `false` | Show transcript notices for significant prompt-cache misses and compaction or branch-summary usage |
+| `showCacheMissNotices` | boolean | `false` | Show transcript notices for significant prompt-cache misses, compaction or branch-summary usage, and provider recovery diagnostics such as dropped Anthropic thinking blocks |
 | `thinkingBudgets` | object | - | Custom token budgets per thinking level. Anthropic, Google, and Bedrock use these natively. OpenAI-compatible models use them when `compat.thinkingTokenBudgetField` (or `supportsThinkingTokenBudget`) is set. |
 
 #### thinkingBudgets
@@ -57,9 +57,9 @@ Use `/trust` in interactive mode to save a project trust decision for future ses
 | `quietStartup` | boolean | `false` | Hide startup header |
 | `defaultProjectTrust` | string | `"ask"` | Fallback project trust behavior: `"ask"`, `"always"`, or `"never"`. Global setting only |
 | `collapseChangelog` | boolean | `false` | Show condensed changelog after updates |
-| `enableInstallTelemetry` | boolean | `true` | Legacy Pi setting retained for configuration compatibility; TR Confidential Cowork does not send install/update telemetry |
-| `enableAnalytics` | boolean | `false` | Inherited opt-in preference retained for compatibility; TR Confidential Cowork does not configure an analytics endpoint |
-| `trackingId` | string | - | Inherited analytics identifier retained for settings compatibility |
+| `enableInstallTelemetry` | boolean | `true` | Send the anonymous install/update ping and selected provider attribution headers. This does not control update checks |
+| `enableAnalytics` | boolean | `false` | Opt-in analytics data sharing. Currently only asked for during the experimental first-time setup (`PI_EXPERIMENTAL=1`) |
+| `trackingId` | string | - | Analytics tracking identifier, generated when `enableAnalytics` is turned on |
 | `doubleEscapeAction` | string | `"tree"` | Action for double-escape: `"tree"`, `"fork"`, or `"none"` |
 | `treeFilterMode` | string | `"default"` | Default filter for `/tree`: `"default"`, `"no-tools"`, `"user-only"`, `"labeled-only"`, `"all"` |
 | `editorPaddingX` | number | `0` | Horizontal padding for input editor (0-3) |
@@ -68,7 +68,7 @@ Use `/trust` in interactive mode to save a project trust decision for future ses
 | `showHardwareCursor` | boolean | `false` | Show the terminal cursor while TUI positions it for IME support |
 | `tuiMode` | string | `"regular"` | Interactive TUI mode: `"regular"` or experimental `"fullscreen"`. Changes from `/settings` apply immediately; `--tui-mode` overrides this setting at startup |
 | `fullscreenExitOutput` | string | `"transcript"` | Fullscreen exit output: `"transcript"` prints the final transcript and resume hint, while `"resume-hint"` restores the previous screen and prints only the resume hint. Has no effect in regular TUI mode |
-| `fullscreenScrollbar` | string | `"auto"` | Fullscreen transcript scrollbar: `"auto"` shows it temporarily while scrolling, `"always"` reserves the rightmost column and keeps it visible, and `"hidden"` hides it. Has no effect in regular TUI mode |
+| `fullscreenScrollbar` | string | `"auto"` | Fullscreen transcript scrollbar: `"auto"` shows it temporarily while scrolling or while the pointer is over its rightmost-column track, `"always"` reserves that column and keeps it visible, and `"hidden"` hides it. Has no effect in regular TUI mode |
 | `fullscreenCopyOnSelect` | boolean | `true` | Automatically copy selected text in fullscreen mode. When disabled, selections stay highlighted and `Ctrl+X` copies the active selection |
 
 For VS Code, include `--wait` so TR Confidential Cowork resumes after the editor exits:
@@ -133,7 +133,7 @@ Version checks read the latest [Lore-Hex/trpi GitHub release](https://github.com
 
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
-| `branchSummary.reserveTokens` | number | `16384` | Tokens reserved for branch summarization |
+| `branchSummary.reserveTokens` | number | `16384` | Tokens reserved when selecting branch history; output is capped at 4096 tokens |
 | `branchSummary.skipPrompt` | boolean | `false` | Skip "Summarize branch?" prompt on `/tree` navigation (defaults to no summary) |
 
 ### Retry
@@ -143,9 +143,12 @@ Version checks read the latest [Lore-Hex/trpi GitHub release](https://github.com
 | `retry.enabled` | boolean | `true` | Enable automatic agent-level retry on transient errors |
 | `retry.maxRetries` | number | `3` | Maximum agent-level retry attempts |
 | `retry.baseDelayMs` | number | `2000` | Base delay for agent-level exponential backoff (2s, 4s, 8s) |
+| `retry.maxAgentDelayMs` | number | `60000` | Max agent-level retry delay (60s) |
 | `retry.provider.timeoutMs` | number | SDK default | Provider/SDK request timeout in milliseconds |
 | `retry.provider.maxRetries` | number | `0` | Provider/SDK retry attempts |
 | `retry.provider.maxRetryDelayMs` | number | `60000` | Max server-requested delay before failing (60s) |
+
+Agent-level retries use exponential backoff capped by `retry.maxAgentDelayMs`, so long retry runs stay responsive after prolonged outages.
 
 When a provider requests a retry delay longer than `retry.provider.maxRetryDelayMs`, the request fails immediately with an informative error instead of waiting silently. Set it to `0` to disable the limit.
 
@@ -157,6 +160,7 @@ Keep `retry.provider.maxRetries` at `0` unless provider-level retries are explic
     "enabled": true,
     "maxRetries": 3,
     "baseDelayMs": 2000,
+    "maxAgentDelayMs": 60000,
     "provider": {
       "timeoutMs": 3600000,
       "maxRetries": 0,

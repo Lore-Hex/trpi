@@ -49,10 +49,99 @@ tr-cowork --tools read,grep,find,ls -p "Audit"  # read-only tool set
 
 Inside interactive mode:
 
-| Command | Purpose |
-|---|---|
-| `/model` | Search and switch models |
-| `/scoped-models` | Configure models used by Ctrl+P cycling |
+```bash
+pi
+/login  # Then select provider
+```
+
+Then just talk to pi. By default, pi gives the model four tools: `read`, `write`, `edit`, and `bash`. The model uses these to fulfill your requests. Add capabilities via [skills](#skills), [prompt templates](#prompt-templates), [extensions](#extensions), or [pi packages](#pi-packages).
+
+**Platform notes:** [Windows](docs/windows.md) | [Termux (Android)](docs/termux.md) | [tmux](docs/tmux.md) | [Terminal setup](docs/terminal-setup.md) | [Shell aliases](docs/shell-aliases.md)
+
+---
+
+## Providers & Models
+
+For each built-in provider, pi maintains a list of tool-capable models. Configured provider catalogs refresh automatically; run `pi update --models` to force an immediate refresh. Authenticate via subscription (`/login`) or API key, then select any model from that provider via `/model` (or Ctrl+L). Press Ctrl+S in the model picker to save the highlighted model as the startup default.
+
+**Subscriptions:**
+- Anthropic Claude Pro/Max
+- OpenAI ChatGPT Plus/Pro (Codex)
+- GitHub Copilot
+
+**API keys:**
+- Anthropic
+- Ant Ling
+- OpenAI
+- Azure OpenAI
+- DeepSeek
+- NVIDIA NIM
+- Google Gemini
+- Google Vertex
+- Amazon Bedrock
+- Mistral
+- Groq
+- Cerebras
+- Cloudflare AI Gateway
+- Cloudflare Workers AI
+- xAI
+- OpenRouter
+- Vercel AI Gateway
+- ZAI Coding Plan (Global)
+- ZAI Coding Plan (China)
+- OpenCode Zen
+- OpenCode Go
+- Hugging Face
+- Fireworks
+- Together AI
+- Baseten
+- Kimi For Coding
+- MiniMax
+- Xiaomi MiMo
+- Xiaomi MiMo Token Plan (China)
+- Xiaomi MiMo Token Plan (Amsterdam)
+- Xiaomi MiMo Token Plan (Singapore)
+
+Pi also supports the llama.cpp router server. Configure it with `/login llama.cpp`, manage downloads and loaded models with `/llama`, then select a loaded model with `/model`. See [docs/llama-cpp.md](docs/llama-cpp.md) for setup and usage.
+
+See [docs/providers.md](docs/providers.md) for other provider setup instructions.
+
+**Custom providers & models:** Add providers via `~/.tr-confidential-cowork/agent/models.json` if they speak a supported API (OpenAI, Anthropic, Google). For custom APIs or OAuth, use extensions. See [docs/models.md](docs/models.md) and [docs/custom-provider.md](docs/custom-provider.md).
+
+---
+
+## Interactive Mode
+
+<p align="center"><img src="docs/images/interactive-mode.png" alt="Interactive Mode" width="600"></p>
+
+The interface from top to bottom:
+
+- **Startup header** - Shows shortcuts (`/hotkeys` for all), loaded AGENTS.md files, prompt templates, skills, and extensions
+- **Messages** - Your messages, assistant responses, tool calls and results, notifications, errors, and extension UI
+- **Editor** - Where you type; border color indicates thinking level and the border shows the streaming working indicator
+- **Footer** - Working directory, session name, total token/cache usage (`↑` input, `↓` output, `R` cache read, `W` cache write, `CH` latest cache hit rate), cost, context usage, current model. Totals include assistant responses, usage reported by tools, and summary generation.
+
+The editor can be temporarily replaced by other UI, like built-in `/settings` or custom UI from extensions (e.g., a Q&A tool that lets the user answer model questions in a structured format). [Extensions](#extensions) can also replace the editor, add widgets above/below it, a status line, custom footer, or overlays.
+
+### Editor
+
+| Feature | How |
+|---------|-----|
+| File reference | Type `@` to fuzzy-search project files |
+| Path completion | Tab to complete paths |
+| Multi-line | Shift+Enter (or Ctrl+Enter on Windows Terminal) |
+| External editor | Ctrl+G opens `externalEditor`, `$VISUAL`, `$EDITOR`, Notepad on Windows, or `nano` elsewhere |
+| Clipboard | Ctrl+V to paste an image or text (Alt+V on Windows), or drag images onto terminal |
+| Bash commands | `!command` runs and sends output to LLM, `!!command` runs without sending |
+
+Standard editing keybindings for delete word, undo, etc. See [docs/keybindings.md](docs/keybindings.md).
+
+### Commands
+
+Type `/` in the editor to trigger commands. [Extensions](#extensions) can register custom commands, [skills](#skills) are available as `/skill:name`, and [prompt templates](#prompt-templates) expand via `/templatename`.
+
+| Command | Description |
+|---------|-------------|
 | `/login`, `/logout` | Manage provider credentials |
 | `/settings` | Configure the terminal UI and runtime |
 | `/resume`, `/new` | Resume or start a session |
@@ -78,13 +167,7 @@ The catalog is refreshed at startup unless offline mode is enabled. Model change
 
 ## Configuration
 
-| Location | Purpose |
-|---|---|
-| `~/.tr-confidential-cowork/agent/settings.json` | Global settings |
-| `~/.tr-confidential-cowork/agent/auth.json` | Local provider credentials |
-| `~/.tr-confidential-cowork/agent/models.json` | Custom provider/model definitions |
-| `~/.tr-confidential-cowork/agent/sessions/` | Session history |
-| `.tr-confidential-cowork/settings.json` | Project settings |
+**`/tree`** - Navigate the session tree in-place. Select any previous point, continue from there, and switch between branches. All history preserved in a single file. Selecting a point while the model is responding cancels that response. Navigation cannot proceed while compaction or another tree navigation is still running; wait for it to finish and retry.
 
 Primary runtime variables:
 

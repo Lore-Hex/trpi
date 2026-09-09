@@ -218,7 +218,11 @@ console.log("Running tests...");
 run("./test.sh");
 console.log();
 
-// 6. Commit and tag
+console.log("Checking the packed coding-agent consumer install...");
+run("npm run check:package-install");
+console.log();
+
+// 7. Commit and tag
 console.log("Committing and tagging...");
 stageChangedFiles();
 run(`git commit -m "Release v${version}"`);

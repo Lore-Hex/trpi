@@ -1,17 +1,13 @@
 {
 	"name": "tr-confidential-cowork-install",
-	"version": "0.84.5",
+	"version": "0.85.1",
 	"private": true,
 	"description": "Lockfile root used by the TR Confidential Cowork installer and updater.",
 	"dependencies": {
-		"tr-confidential-cowork": "0.84.5"
+		"tr-confidential-cowork": "0.85.1"
 	},
 	"overrides": {
-		"protobufjs": "7.6.5",
-		"rimraf": "6.1.2",
-		"gaxios": {
-			"rimraf": "6.1.2"
-		}
+		"protobufjs": "7.6.6"
 	},
 	"engines": {
 		"node": ">=22.19.0"
