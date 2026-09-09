@@ -81,10 +81,16 @@ export async function runClient(command: ClientCommand, options: RunClientOption
 
 		const agent = match.agent;
 		const completedText = new Map<string, string>();
+		const completedRuns = new Set<string>();
+		let notifyCompletion: (() => void) | undefined;
 		let deliveryTail = Promise.resolve();
 		const unsubscribe = match.transcript.state.subscribe((value, _context, delivery) => {
 			if (delivery.kind !== "update" || value.event === null) return;
 			const event = value.event;
+			if (event.type === "run_end") {
+				completedRuns.add(event.runId);
+				notifyCompletion?.();
+			}
 			deliveryTail = deliveryTail.then(async () => {
 				if (event.type === "message_end" && event.runId !== undefined && event.message.role === "assistant") {
 					completedText.set(event.runId, messageText(event.message));
@@ -99,6 +105,26 @@ export async function runClient(command: ClientCommand, options: RunClientOption
 		let response: AgentOperationResponse;
 		try {
 			response = await agent.prompt({ message: command.prompt, images: null }, BACKGROUND_CONTEXT);
+			// RPC completion and transcript replication can arrive independently.
+			// Keep the subscription alive until this run's terminal event arrives.
+			if (response.accepted && response.error === null && !completedRuns.has(response.operationId)) {
+				const operationId = response.operationId;
+				let timer: ReturnType<typeof setTimeout> | undefined;
+				try {
+					await new Promise<void>((resolve, reject) => {
+						notifyCompletion = () => {
+							if (completedRuns.has(operationId)) resolve();
+						};
+						timer = setTimeout(
+							() => reject(new Error("Timed out waiting for the terminal transcript event")),
+							10_000,
+						);
+					});
+				} finally {
+					clearTimeout(timer);
+					notifyCompletion = undefined;
+				}
+			}
 		} finally {
 			unsubscribe();
 			await deliveryTail;

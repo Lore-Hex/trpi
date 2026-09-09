@@ -615,6 +615,7 @@ describe("experimental durable server composition", () => {
 		);
 
 		expect(result).toMatchObject({ kind: "prompted", text: "deterministic remote answer" });
+		expect(eventTypes.at(-1)).toBe("run_end");
 		expect(eventTypes).toEqual(
 			expect.arrayContaining([
 				"run_start",
